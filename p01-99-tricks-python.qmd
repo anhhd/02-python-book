@@ -1,0 +1,351 @@
+---
+title: Các mẹo trong Python
+eval: false
+---
+
+
+
+## Debug 
+
+Sử dụng `%xmode` hoặc `%debug` để tìm lỗi. Xem ví dụ dưới đây
+
+```{python}
+def func_1(a,b):
+    return(a/b)
+```
+
+```{python}
+func_1(8,3)
+```
+
+```{python}
+func_1(7,0)
+```
+
+Sử dụng `%xmode` cho phép hiển thị thêm các thông tin lỗi
+
+```{python}
+%xmode Verbose
+```
+
+```{python}
+func_1(8,0)
+```
+
+## Kiểm tra thời gian chạy code
+
+Python cho phép sử dụng profiling. Hai `magic command` hay dùng nhất là `%time` & `%timeit`.
+`%timeit` cho phép hiển thị thông tin chính xác với nhiều thông số hơn.
+
+```{python}
+%time sum(range(100))
+```
+
+```{python}
+%timeit sum(range(100))
+```
+
+## Profiling với memory 
+
+cài đặt `memory_profiler` trên với `anaconda prompt`
+
+`pip install memory_profiler`
+
+```{python}
+%load_ext memory_profiler
+```
+
+```{python}
+def sum_of_lists(N):
+           total = 0
+           for i in range(5):
+               L = [j ^ (j >> i) for j in range(N)]
+               total += sum(L)
+           return total
+```
+
+```{python}
+%memit sum_of_lists(10000)
+```
+
+```{python}
+sum_of_lists(10000)
+```
+
+## Phân biệt các dấu gạch dưới trong Python
+
+Dâu gạch dưới `_` có nhiều ý nghĩa khác nhau trong Python và có nhiều cách sử dụng như sau
+
+### Lưu giá trị từ trước
+
+Cách này chỉ sử dụng với Ipython
+
+```{python}
+x = 10
+```
+
+```{python}
+_
+```
+
+### Bỏ qua giá trị không cần thiết
+
+```{python}
+a,_, c = (1, 2, 3)
+```
+
+```{python}
+a
+```
+
+```{python}
+c
+```
+
+```{python}
+# Ignore nhiều giá trị
+a, *_, b = (1,2,3,4,5,6,7)
+print(a); print(b)
+```
+
+### Sử dụng trong loop
+
+```{python}
+for _ in range(5):
+    print(_)
+```
+
+```{python}
+languages = ['R', 'Python', 'Scala']
+for _ in languages:
+    print(_)
+```
+
+### Phân cách hàng nghìn
+
+```{python}
+x = 1_000_000
+print(x)
+```
+
+### Đặt tên có chứa `_`
+
+Trong Python, có 4 cách đặt tên chứa `_`:
+- Một dấu đằng trước: `_name`
+- Một dấu đằng sau: `name_`
+- Hai dấu đằng trước: `__name`
+- Hai dấu ở hai bên: `__name__`
+
+#### Một dấu đằng trước
+
+Cho phép bỏ qua hàm khi import
+
+```{python}
+# Tạo file my_functions.py 
+```
+
+```{python}
+## filename: my_functions.py
+## Ví dụ để hiểu rõ chức năng của dấu gạch dưới trong python
+
+def func():
+    return "Anh Hoang Duc"
+
+def _private_func():
+    return 7
+```
+
+```{python}
+from my_functions import *
+```
+
+```{python}
+func()
+```
+
+```{python}
+_private_func()
+```
+
+Trong cách import trên, hàm `_private_func` đã không được import vào trong môi trường làm việc. Ta có thể import vào môi trường làm việc như sau
+
+```{python}
+import my_functions
+```
+
+```{python}
+my_functions.func()
+```
+
+```{python}
+my_functions._private_func()
+```
+
+#### Gạch dưới cuối tên
+
+Sử dụng khi dùng làm keyword
+
+```{python}
+def function(class):
+    return print(class)
+```
+
+```{python}
+def function(class_):
+    return print(class_)
+```
+
+```{python}
+function(9)
+```
+
+#### Hai gạch dưới đầu tên
+
+
+## List object trong môi trường làm việc 
+
+Hiển thị tất cả các biến trong môi trường: sử dụng `%whos`
+
+```{python}
+x, y = 7, 'test' 
+```
+
+```{python}
+%whos
+```
+
+Sử dụng `%who_ls data_type`
+
+```{python}
+import pandas as pd
+df = pd.DataFrame({'x' : [1,2,3]})
+x = [1,2,3]
+```
+
+```{python}
+%who_ls DataFrame
+```
+
+```{python}
+%who_ls list
+```
+
+```{python}
+%who_ls DataFrame list
+```
+
+## Hiển thị nhiều kết quả trong 1 cell
+
+Trong jupyter notebook, kết quả trong 1 cell chỉ được hiển thị 1 lần. ta có thể khắc phục như sau
+
+```{python}
+from IPython.core.interactiveshell import InteractiveShell
+InteractiveShell.ast_node_interactivity = "all"
+```
+
+```{python}
+x, y = 7, 8
+```
+
+```{python}
+x
+y
+x * y
+```
+
+## Assign string thành object
+
+**Problem**: Tạo cùng lúc nhiều object, gán mỗi object với 1 giá trị
+
+```{python}
+import numpy as np
+df_name = ["df1", "df2", "df3"]
+```
+
+```{python}
+for i in df_name:
+    globals()[i] = np.random.random(1)
+    print(i)
+    print(eval(i))
+```
+
+```{python}
+for i in df_name:
+    del globals()[i]
+```
+
+## Evaluation
+
+Tương tự như R, Python có thể sử dụng evaluation để thực hiện lập trình
+
+```{python}
+my_df = 7
+```
+
+```{python}
+eval('my_df')
+```
+
+## Xóa toàn bộ environment
+
+```{python}
+# Xóa dataframe
+all_var = %who_ls DataFrame
+```
+
+```{python}
+for i in all_var:
+    print(globals()[i])
+```
+
+```{python}
+for _ in all_var:
+    del globals()[_]
+```
+
+```{python}
+%who_ls
+```
+
+```{python}
+# Delete all
+%reset -f
+```
+
+```{python}
+%who_ls
+```
+
+## Lưu code từ cell thành file
+
+Sử dụng magic command %%writefile
+
+```python
+%%writefile 09.test_script/03_test_script.py
+def joke():
+    print('My job')
+```
+
+## Mở một loạt file text và sửa nội dung
+
+```python
+def replace_md(file, find, replace):
+    with open(file, encoding="utf8") as f:
+        s = f.read()
+        s = s.replace(find, replace)
+    with open(file,'w', encoding="utf8") as f:
+        f.write(s)
+
+import glob, os
+os.chdir("../_book")
+for file in glob.glob("*.md"):
+    replace_md(file = file, find = '<img src="', replace = '![](')
+    replace_md(file = file, find = '" width="672" />', replace = ')\n\n')
+```
+
+## Chạy file python từ bat
+
+```python
+python script.py
+```
+

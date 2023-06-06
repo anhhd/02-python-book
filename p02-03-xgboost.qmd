@@ -1,0 +1,57 @@
+---
+title: Xgboost với sklearn
+date: "20210101"
+---
+
+
+
+## Ví dụ đơn giản
+
+```{python}
+from xgboost import XGBClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import auc
+import pandas as pd
+```
+
+```{python}
+iris = load_iris()
+```
+
+```{python}
+iris_df = pd.DataFrame(iris.data, columns = iris.feature_names)
+iris_df.info()
+```
+
+```{python}
+iris_df.describe()
+```
+
+```{python}
+# Chia train test
+x_train, x_test, y_train, y_test = train_test_split(iris.data, iris.target, 
+                                                             train_size = 0.7, random_state = 3)
+```
+
+```{python}
+model = XGBClassifier(probabbility = True)
+```
+
+```{python}
+model.fit(x_train, y_train)
+```
+
+```{python}
+model.predict(x_test)
+```
+
+```{python}
+print("Accurarcy score is: ", round(accuracy_score(model.predict(x_test), y_test),2))
+```
+
+```{python}
+model.predict_proba(x_test)
+```
+

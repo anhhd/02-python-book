@@ -1,0 +1,68 @@
+---
+title: Biến đổi dữ liệu text trong python
+---
+
+
+
+Tương tự như R, Python cũng có những thư viện rất mạnh để biến đổi dữ liệu định dạng text. Thư viện quan trọng nhất là `re`. Tuy nhiên, không giống như R, Python có thể xử lý tốt các ký tự tiếng Việt.
+
+## Methods với string
+
+```{python}
+text = ' Hello Việt Nam '
+text
+```
+
+```{python}
+# Thay Vi bằng VN
+text.replace('Vi', "VN")
+```
+
+```{python}
+# Cắt các khoảng trắng trước và sau text
+text.strip()
+```
+
+```{python}
+# Lower
+text.lower()
+```
+
+```{python}
+# Upper
+text.upper()
+```
+
+```{python}
+# lower và cắt khoảng trăng
+text.lower().strip()
+```
+
+## Regular expression với `regex`
+
+Các `methods` trong string có thể giải quyết được các vấn đề cơ bản khi biến đổi dữ liệu text. Tuy nhiên, để làm việc với `regular expression` cần sử dụng library `re`
+
+```{python}
+import re
+text = 'Bạn VN Nammmm cần làm ***'
+```
+
+```{python}
+# Thay thế VN bằng Việt Nam
+re.sub('VN', 'Việt Nam', text)
+```
+
+```{python}
+# Tìm vị trí chữ m xuất hiện 2 lần hoặc nhiều hơn, thay bằng m
+re.sub('m{4,}', 'm', text)
+```
+
+```{python}
+# Tìm vị trí ký tự * xuất hiện 3 lần, remove và xóa khoảng trăng
+```
+
+```{python}
+new_text = re.sub('\*{3}', "", text).strip()
+new_text
+```
+

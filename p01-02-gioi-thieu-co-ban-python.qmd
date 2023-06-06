@@ -1,0 +1,1112 @@
+---
+title: Các cấu trúc cơ bản trong Python
+description: Giới thiệu về các kiểu dữ liệu cơ bản trong Python
+---
+
+## Variables - biến
+
+Để gán biến trong Python, chúng ta sử dụng `=`, mỗi biến được gán sẽ chiếm 1 lượng bộ nhớ nhất định. Biến trong Python sẽ tương tự như object trong R
+
+```{python}
+x = 20
+x
+```
+
+Đặt tên biến phải follow 1 số rule cơ bản sau:
+- Sử dụng chữ, số, `_` và ko được sử dụng `'`, `-`, khoảng trắng
+- Bắt đầu bằng chữ
+
+## Cấu trúc dữ liệu
+
+- Các kiểu dữ liệu thông dụng nhất trong Python
+    * Booleans
+    * Numbers
+    * Strings
+    * Printing
+    * Lists
+    * Dictionaries    
+    * Tuples 
+    * Sets
+
+### Boolean
+
+bao gồm 2 giá trị `True` và `False`
+
+```{python}
+x = True
+x
+```
+
+```{python}
+x = 100 < 2
+x
+```
+
+Hàm type là hàm trả về kiểu dữ liệu của đối tượng
+
+```{python}
+type(x)
+```
+
+Khi tính toán số học `True` được tính là 1, `False` là 0
+
+```{python}
+True + False
+```
+
+```{python}
+y = [False, False, True, True] # List boolean value
+sum(y)
+```
+
+### Numbers
+
+giống như các ngôn ngữ khác, 2 kiểu dữ liệu số phổ biến là `integer` và `float` 
+
+```{python}
+a, b = 1, 2
+c, d = 2.5, 10.0
+type(a)
+```
+
+```{python}
+type(d)
+```
+
+Integer & float là kiểu dữ liệu bất biến (immutable). Khi thực hiện các phép toán trên dạng biến này, một ô nhớ khác được tạo ra và chứa kết quả, giá trị biến ban đầu được bảo toàn.VD:
+
+```{python}
+x = 2
+x * 2
+```
+
+```{python}
+x
+```
+
+```{python}
+# Gtri chỉ thay đổi khi gán vào 1 biến mới
+x = x * 2
+x
+```
+
+### String
+
+trong Python, **string** cũng là kiểu dữ liệu immutable
+
+![](https://lh3.googleusercontent.com/-WNOOzlAbmB4fdFdactyzZ0rd4eiw3fbQHjopYenkSVW-Nqt3QvjYHIW2SI04yn9tkXclQ8iia_Loi6H7gyP7iIROHAlppc-QT_9XPyPzUVJgxH3RWvxgixZQsh_n6g7AF5JxxnXt3zn83M5YbwFGbPodlWuuaOI-A5NW8YHl4UGxb0MrbNC_E2t40bhEl80BlKWZmPcL-oFHimsHZl8TnPhAxdfYYu8gahhtEkZotJSdmQRTcqj0QMf5-SHzAwp7fGnhhKEEDD2SKxg4nFhtgNSV_rVdXo8rxb9vj2u5g6O3eZXxnGtDrY5wsBTJgpDwnzHY4KGwnkxTWBRoYKH9sLjnBQgfgULUu9LiJHr90tmS1Mw4z4m_KzvVCB70q3jDLNoE370NJghhbWXhDUM4Abcq2J-pYAQvbaOyyUZJS6PLOp-58mRl6GTFOjMx7so6SSr_xHqeJJYxfYqDfnZ_gUe_AuokO8C52MJ5hQkMDWDiZ_VUahww7pmocku4fW-Hs2U6BL5qNeynb4h2jg7WXRl7dIEfG0qCLVPzCJwQY_lYka9t8mzJ8oLaOg25tPKdn03QyZA5cFaHqfpjNpVvbmWt3Kl2k3Sgvtm5YrjVVVBcG82Hqk2zBZmeW5dJ25-uV-774Fs3Sr0kR7aPQESSDYPIct79SXRqg=w269-h150-no)
+
+```{python}
+# Có thể nhập bằng single quote hoặc double quote
+a = 'single quotes'
+b = "single quotes"
+a == b
+```
+
+```{python}
+#hoặc cả 2
+c = "i'm a man"
+c
+```
+
+```{python}
+word = "hello"
+word[0]
+```
+
+Chuỗi bao gồm một tập hợp các ký tự sắp xếp tuần tự, mỗi ký tự đều có một **chỉ mục(index)** riêng. 
+
+Chỉ mục được đánh 2 chiều từ trái qua phải và từ phải qua trái. Bên dưới là cách truy cập vào từng ký tự của chuỗi thông qua chỉ mục: **word[index]** 
+
+```{python}
+word = "hello"
+# Chiều từ trái qua phải
+word[2]
+```
+
+```{python}
+# Chiều từ phải qua trái, sd khi ko biết chính xác độ dài chuỗi
+word[-1]
+```
+
+**String Slicing**
+
+> Cú pháp: **string[begin:end:step]** - cắt chuỗi từ phần tử **begin** cho đến phần tử **trước** phần tử **end**, khoảng cách giữa các ký tự là **step**
+
+```{python}
+word[1:3]
+```
+
+```{python}
+word[2:]
+```
+
+```{python}
+# Lấy cả chuỗi, cách 2 đơn vị
+word[::2]
+```
+
+**String methods**
+
+```{python}
+dept = 'Phòng Phân tích kinh doanh'
+```
+
+```{python}
+# trả về dạng chữ thường
+dept.lower()
+```
+
+`lower` ở đây là 1 `method` - tức là 1 function được attached vào object - ở đây là object `dept`, chúng ta sẽ tìm hiểu thêm về `method` trong các phần sau, có thể hiểu đơn giản:
+
+- Python objects như list, string, .... đều có các method mặc định được sử dụng để manipulate dữ liệu trong các object đó
+- `String` object có string method, `list` có list method
+
+```{python}
+# trả về dạng chữ hoa
+dept.upper()
+```
+
+```{python}
+# Trả về một list các phần tử được tách bởi một dấu phân cách(delimiter) cho trước
+dept.split()
+```
+
+```{python}
+# Trả về một chuỗi được ghép bởi các phần tử từ một list, theo một dấu phân cách cho trước
+'xx'.join(['a', 'b', 'c'])
+```
+
+```{python}
+#tìm kiếm ký tự - trả về vị trí của ký tự đầu tiên tìm được trong chuỗi
+# trả ra -1 nếu k tìm thấy
+dept.find('phòng')
+```
+
+```{python}
+# Check xem chuỗi có bắt đầu bằng ký tự cho trước không
+dept.startswith('w')
+```
+
+```{python}
+# tương tự là endwith
+dept.endswith('doanh')
+```
+
+### List
+
+Là kiểu dữ liệu linh hoạt nhất trong Python, là 1 tập hợp các phần tử - có thể cùng kiểu dữ liệu hoặc không, trong list các phần từ được **sắp xếp** và **có thể thay đổi (mutable)**. 
+
+**Khởi tạo list**
+
+Để khởi tạo list, chúng ta dùng `[]`
+
+```{python}
+x = [10, 'foo', False, 2.5] #các phần tử có kiểu dữ liệu không đồng nhất
+type(x)
+```
+
+hoặc hàm list():
+
+```{python}
+color = list(['xanh', 'đỏ', 'vàng'])
+color
+```
+
+Index của `list` được đánh theo nguyên tắc tương tự như `string` đã nêu ở trên
+
+```{python}
+x[1]
+```
+
+```{python}
+x[-2]
+```
+
+**List slicing**
+
+> Cú pháp: **list[begin:end:step]**
+
+- begin: Chỉ mục của phần tử đầu tiên
+- end: Chỉ mục của phần tử **sau** phần tử cuối cùng
+- step: Khoảng cách chỉ mục của các phần tử sẽ được lấy ra
+
+```{python}
+x[1:3]
+```
+
+```{python}
+numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+```{python}
+numbers[1:9:3] # cắt từ 1 đến trước 9, khoảng khách là 3
+```
+
+```{python}
+numbers[::2] # lấy từ đầu đến cuối, khoảng cách là 2
+```
+
+```{python}
+numbers[:2] # lấy 2 giá trị đầu
+```
+
+```{python}
+numbers[-3:] # lấy 3 giá trị cuối
+```
+
+```{python}
+numbers[::-1] # đảo ngược giá trị của list
+```
+
+**Thay đổi phần tử trong list**
+
+```{python}
+skill_sets = ['sql', 'r', 'excel', 'python']
+```
+
+```{python}
+# Thay đổi từ chỉ mục 2 đến hết
+skill_sets[2:] = ['spss']
+skill_sets
+```
+
+```{python}
+# chỉ mục 1 thay bằng 'vba'
+skill_sets[1] = 'vba'
+skill_sets
+```
+
+**List methods**
+
+`append()`: Thêm một phần tử vào list
+
+```{python}
+numbers.append(15)
+numbers
+```
+
+`pop`: xóa phần tử trong list
+
+```{python}
+numbers.pop(3) #xóa phần từ thứ 3
+numbers
+```
+
+`extend(list2)`: Ghép một list mới vào list hiện tại
+
+```{python}
+numbers.extend(['a', 'b', 'c'])
+numbers
+```
+
+`sort`: sắp xếp các phần tử theo thứ tự, reverse = True nếu muốn sort kiểu descending
+
+```{python}
+numbers2 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+numbers2.sort(reverse=True)
+numbers2
+```
+
+Chi tiết hơn về `method` của list, chúng ta có thể xem [tại đây](https://docs.python.org/3/tutorial/datastructures.html#more-on-lists)
+
+### Tuple
+
+Hoàn toàn tương tự list, nhưng khác ở điểm Tuple là đối tượng **bất biến (immutable)**<br>
+Để khởi tạo tuple, chúng ta dùng () thay vì []
+
+```{python}
+tuple1 = ("Hanoi", "Hai Phong", "Tay Ninh", "Lam Dong")
+type(tuple1)
+```
+
+```{python}
+tuple2 = "Hanoi", "Hai Phong", "Tay Ninh", "Lam Dong"
+type(tuple2)
+```
+
+```{python}
+# Khời tạo tuple rỗng
+tpl = ()
+#hoặc
+tpl2 = tuple()
+print(type(tpl), type(tpl2))
+```
+
+Vì Tuple là bất biến nên chúng ta sẽ không có những hàm thay đổi cấu trúc như append(), pop(),.. như của List
+
+```{python}
+list1 = [1, 2, 3]
+tuple1 = ('a', 'b', 'c')
+```
+
+```{python}
+list1[2] = "a"
+list1
+```
+
+Câu lệnh dưới đây sẽ báo lỗi vì tuple ko cho phép thay đổi 1 phần tử trong nó
+
+```{python}
+#| error: true
+tuple1[1] = 1
+tuple1
+```
+
+Cả `tuple` và `list` đều có thể *unpacked* như ở dưới:
+
+```{python}
+x, y, z = tuple1
+y
+```
+
+Thao tác này khá tiện lợi và có tính ứng dụng cao sau này
+
+### Sets & Dictionaries
+
+**Dictionary** trong Python tương tự với từ điển ngoài đời thực, cũng bao gồm các cặp key - value (từ vựng - ý nghĩa). Key và Value được phân cách nhau bởi dấu hai chấm (:), các cặp key-value được phân cách nhau bởi dấu phẩy (,). Nhìn một cách tổng quát thì nó giống với Json<br>
+
+**Dictionary** là kiểu dữ liệu khả biến (mutable)
+
+```{python}
+d = {
+    'one':'một',
+    'two':'hai',
+    'three':'ba'}
+type(d)
+```
+
+`one`, `two`, `three` là *key* còn `một`, `hai`, `ba` là *value*
+
+`value` trong dictionary có thể là bất kỳ kiểu dữ liệu nào: string, numbers, list..., tuy nhiên `key` thì phải là kiểu dữ liệu **bất biến(immutable)**
+
+```{python}
+d2 = {
+    'one': 0.5,
+    'two': [1, 2, 3],
+    'three': False}
+type(d2)
+```
+
+Truy vấn 1 phần tử trong dictionary
+
+```{python}
+d2['two']
+```
+
+Thay đổi 1 phần tử trong dictionary
+
+```{python}
+d2['three'] = 3
+d2
+```
+
+Thêm một phần tử
+
+```{python}
+d2['four'] = 4
+d2
+```
+
+Xóa 1 phần tử 
+
+```{python}
+del d2['two']
+d2
+```
+
+**dictionary methods:**
+
+```{python}
+d.items()
+```
+
+```{python}
+d.values()
+```
+
+**Set** là 1 tập hợp các phần tử không duplicate
+
+```{python}
+s1 = {'a', 'b', 3}
+type(s1)
+```
+
+```{python}
+s2 = {1, 1, 2, 2, 2, 3, 3, 3}
+s2
+```
+
+Set có thể hứa nhiều kiểu dữ liệu khác nhau tuy nhiên các kiểu dữ liệu này phải immutable như Integer, Float, Boolean hay Tuple
+
+```{python}
+mix_set = { "dbs_aad", 34, (4, 5, 6) }
+```
+
+Python sẽ báo lỗi nếu bạn đặt một biến khả biến trong Set, vd list
+
+```{python}
+#| error: true
+mix_mutable_set = { "Hải Phòng", "Hà Nội", [ 2, 4 ] }
+```
+
+**set methods**
+
+`add()` Thêm mới phần tử vào set
+
+```{python}
+s1.add('4')
+s1
+```
+
+`remove`: Xóa 1 phần tử
+
+```{python}
+s1.remove('4')
+s1
+```
+
+```{python}
+# Kiểm tra s1 có phải tập con của s2 ko 
+s1.issubset(s2)
+```
+
+```{python}
+# Kiểm tra tập giao giữa 2 tập con
+s1.intersection(s2)
+```
+
+## Toán tử - Operators
+
+Các toán tử liên quan đến số học như `+` `-` `*` `/` khá đơn giản nên chúng ta sẽ ko nhắc tới ở đây
+
+### Toán tử so sánh - Comparison operators
+
+```{python}
+x, y = 1, 2
+x < y
+```
+
+```{python}
+x > y
+```
+
+Chúng ta có thể so sánh 1 chuỗi các giá trị
+
+```{python}
+1 < 2 < 3
+```
+
+```{python}
+# hoặc 
+1 <= 2 <= 3
+```
+
+Gán biến bằng `=` và so sánh 2 giá trị bằng `==`
+
+```{python}
+x = 1  #assignment
+x == 2 #comparison
+```
+
+So sánh không bằng
+
+```{python}
+x != 2
+```
+
+### Toán tử xác định - Identity operators
+
+```{python}
+ta = "Nguyen Tuan Anh"
+ha = ta
+ta is ha
+```
+
+```{python}
+ta is not ha
+```
+
+**Lưu ý**: sự khác nhau giữa `==` và `is`, 2 toán tử này lần lượt kiểm tra độ `equality` và `identical` và cơ bản là ko giống nhau, check ví dụ dưới
+
+```{python}
+x = [1, 2, 3]
+y = [1, 2, 3]
+x == y # toán tử == kiểm tra tính ngang bằng - equality
+```
+
+```{python}
+x is y # toán tử is kiểm tra tính đồng nhất - identical
+```
+
+Toán tử `is` sẽ trả ra True nếu một biến được gán từ 1 biến khác, ví dụ
+
+```{python}
+z = x
+z is x
+```
+
+### Toán tử logic - Logical operators
+
+Bao gồm 3 loại `and`, `or`, `not`
+
+```{python}
+True and False
+```
+
+```{python}
+not False and True
+```
+
+```{python}
+1 > 2 and 3 == 3
+```
+
+### Toán tử thành viên - Membership operators
+
+**in**
+
+```{python}
+'x' in 'hanoi'
+```
+
+**not in**
+
+```{python}
+'x' not in 'hanoi'
+```
+
+## Điều kiện
+
+**if**
+
+```{python}
+if 1 < 2:
+    print('Yep!')
+```
+
+**If else**
+
+```{python}
+if 1 > 2:
+    print('first')
+else:
+    print('last')
+```
+
+**if else elif**
+
+```{python}
+if 1 == 2:
+    print('first')
+elif 3 == 3:
+    print('middle')
+else:
+    print('Last')
+```
+
+**Lưu ý về code block & Indentation trong python**
+
+Trong Python, tất cả code block (đoạn code nằm trong câu lệnh if, vòng lặp, hàm...) đều được lùi vào 1 khoảng, dòng trước code block sẽ được kết thúc bằng dấu `:` <br>
+VD câu lệnh dưới sẽ báo lỗi
+
+```{python}
+#| error: true
+if 1 < 2:
+print('x')
+```
+
+* Các câu lệnh trong cùng 1 block phải có cùng indentation
+* Indentation theo chuẩn của Python là 4 dấu cách - hoặc tương đương 1 dấu Tab
+
+Follow rule này sẽ khiến code của chúng ta clean và rành mạch hơn nhất nhiều :) 
+
+## Vòng lặp
+
+![Loop](https://lh3.googleusercontent.com/Gsy3gvhT5OUjqobdPrCDaNL7B7G8I57KfjTD-cvwZNKjhm0dcHQ1VTZESRnyR3SrbOHhJUrX8UBZ_EO1uJxq3Ddlnxkn6W7F6Nxe7xjqgcqOLfuSN50PSm2vWVIiXxc9z-f_950-cI-NSp5Jd7j592c1yJ9qJySifchPwTPmdzbW2pcQfq5ZE-y3b30pmK1sZGd1U_hh9CjiiFowARUopdY7cz9xkhFg5TGusIxYChZHRmiFqf8eOgZpEDLH-aPNTygyQnArbE61YmUPjzj5-XA2yiXfqfbtS7lzPkMnQOuE5HImeaXnOzEKuJnGGBLi66k22PslajI-_RjyCh_YKsohjThxT-ocK6cw4v6mdDb3qq4etGdRePkhB3a1rlI-7NT62yWphsmbi4OHP2WSOJjpGfblOB-Ezi5irhofUIQJbUHSBDiMQ-fCzZGeJt_6xCXlg-AulJD51CuTHDd4F-sf9QCigiTfFKy0bYriXIhwq_l1MwhUGqWZ5UAamrf1H_HsVVK3UTUfwJN41s40gaH8vMI9fFr2cDlcivRFk43WaK9Ik9Nri1vYr7OeB8_tIMjp6Br2AP_2xbkCXRlyrR_5vsjgkAjuc3dgbiLYLJ37rneo2FTs1R5V48mi85oQjTN3x_Gc_mjExIGoq3tjmMI1hHLRaBWehEb-1QlGsMYo9qa1hQr9LcHcqg=w450-h300-no)
+
+Ảnh từ [PenJee](https://blog.penjee.com/top-5-animated-gifs-explain-loops-python/)
+
+### while Loops
+
+**while + print**
+
+```{python}
+a = 1
+while a < 10:
+    print(a)
+    a += 2 # += tương đương với a = a + 2
+```
+
+**while + if**
+
+```{python}
+a = 0
+while a < 20:
+    if a % 5 == 0:
+        print('{x} chia hết cho 5'.format(x=a))
+    a += 1
+```
+
+**while + break**
+
+VD: print số từ 1 - 9 cho đến khi gặp số chia hết cho 5
+
+```{python}
+a = list(range(1, 10))
+i = 1
+while i < max(a):
+    print(i)
+    if i % 5 == 0:
+        break
+    i += 1
+```
+
+**while + else**
+
+Hàm else sẽ được thực hiện khi a không còn nhỏ hơn 10
+
+```{python}
+a = 1
+while a < 10:
+    print(a)
+    a += 2
+else:
+    print ('End while')
+```
+
+### for Loops
+
+```{python}
+animals = ['dog', 'cat', 'bird']
+for animal in animals:
+    print("The plural of " + animal + " is " + animal + "s")
+```
+
+**for + else**
+
+```{python}
+animals = ['dog', 'cat', 'bird']
+for animal in animals:
+    print('The plural of ' + animal + ' is ' + animal + 's')
+else:
+    print('End for loop')
+```
+
+### List comprehension
+
+`List comprehension` là cách tạo list đơn giản và nhẹ nhàng hơn sử dụng vòng lặp thông thường rất nhiều.
+
+Cú pháp:
+>**[ expression for item in list if conditional ]**
+
+Ví dụ:
+
+```{python}
+x = list(range(10))
+x
+```
+
+Chúng ta đang cần tạo 1 list y bằng cách lấy mỗi phần tử của list x nhân với 2
+
+Cách làm thông thường - sử dụng vòng lặp:
+
+```{python}
+y = []
+for i in x:    
+    y.append(i * 2)
+y    
+```
+
+Thay vì sử dụng vòng lặp như trên có thể dùng 1 câu lệnh
+
+```{python}
+y = [i * 2 for i in x]
+y
+```
+
+Để lọc thêm điều kiện chúng ta có thể sử dụng kết hợp với `if` ở cuối câu, vd như ở dưới ta chỉ lấy các phần tử của list chia hết cho 2
+
+```{python}
+y = [i * 2 for i in x if i % 2 == 0]
+y
+```
+
+Tương tự với `set comprehension`, `dictionary comprehension`
+
+## Hàm trong Python
+
+### Built-in function
+
+Python cung cấp 1 số hàm cơ bản mà không cần phải `import` từ library nào, chúng ta sẽ tìm hiểu 1 số hàm cơ bản và thường xuyên sử dụng
+
+**print():** In 1 object ra console
+
+```{python}
+print ("Tôi muốn học Python trong 2 tuần")
+```
+
+Print có tham số 
+
+```{python}
+# Cách 1 
+print ('Tên tôi là %s và tôi %d tuổi' % ('Hoàng', 29)) # %s là để nhập string, #d để nhập decimal
+```
+
+```{python}
+# Cách 2
+print ('Tên tôi là {x} và tôi {y} tuổi'.format(x = 'Hoàng', y = 29))
+```
+
+**Lưu ý:** `format` là 1 *string method* để insert dữ liệu vào variables trong string
+
+**type()**: trả về kiểu dữ liệu của 1 object
+
+```{python}
+x = 3
+type(x)
+```
+
+```{python}
+person = {"name": "Nguyen Tuan Anh", "title": "Xam King"}
+type(person)
+```
+
+**len()**: trả về chiều dài hoặc số lượng phần tử của một đối tượng.
+
+```{python}
+# Trả về chiều dài của chuỗi
+dept = "dbs_aad"
+len(dept)
+```
+
+```{python}
+# Trả về số phần tử trong một List
+languages = ["Vietnamese", "English"]
+len(languages)
+```
+
+**max()**: trả về giá trị lớn nhất, tương tự là **min()**
+
+```{python}
+# Trả về giá trị lớn nhất của một dãy số
+max(1,2,4)
+```
+
+```{python}
+# Trả về giá trị của phần tử lớn nhất trong một List
+max([1, 20, 18])
+```
+
+**sum():** hàm tính tổng
+
+```{python}
+sum([1, 2, 3])
+```
+
+**range()**: kết hợp với list hoặc tuple để tạo dãy số
+
+```{python}
+list(range(0, 10))
+```
+
+**zip():** combine từng item của 2 đối tượng theo thứ tự và trả ra kiểu dữ liệu là `zip object`, sau đó gọi lại kết quả bằng hàm `list`
+
+```{python}
+x = 'abc'
+y = 'def'
+z = zip(x,y)
+list(z)
+```
+
+```{python}
+countries = ('Japan', 'Korea', 'China')
+cities = ('Tokyo', 'Seoul', 'Beijing')
+for country, city in zip(countries, cities):
+    print(f'The capital of {country} is {city}')
+```
+
+Có thể sử dụng `zip` để tạo dictionary
+
+```{python}
+names = ['Tom', 'John']
+marks = ['E', 'F']
+dict(zip(names, marks))
+```
+
+Hai hàm khác cũng thường xuyên sử dụng: `any` và `all`:
+
+- `any` kiểm tra nếu có 1 phần tử là TRUE
+- `all` kiểm tra nếu tất cả các phần tử đều là TRUE
+
+```{python}
+list2 = [False, False, True]
+any(list2)
+```
+
+```{python}
+all(list2)
+```
+
+Để tìm hiểu thêm các hàm hệ thống có thể tham khảo thêm [tại đây](https://docs.python.org/2.7/library/functions.html)
+
+### User-defined function
+
+Viết hàm để tái sử dụng code nhiều lần, có lẽ ai cũng nắm được mục tiêu cao cả này, để viết hàm trong Python chúng ta sử dụng cấu trúc `def`
+
+Ví dụ: viết 1 hàm check số được đưa vào là âm hay dương
+
+```{python}
+def check_num(x):
+    if x < 0:
+        return 'negative'
+    return 'positive'
+
+check_num(2)
+```
+
+Thành phần của function trên bao gồm các phần chính: 
+- `def`: keyword
+- phần check_num(x) là khai báo tên function và tên của biến đầu vào sử dụng trong function, 1 function có thể có biến đầu vào hoặc không
+> lưu ý tên function tự tạo ko nên trùng với các hàm mặc định nếu ko sẽ gây lỗi
+- Phần *indented* là phần function body - nội dung chính của function
+- Phần `return` - cho phép hàm trả kết quả sau khi thực hiện xong, phần này có thể có hoặc không
+
+VD hàm dưới không có `return` nên khi thực hiện xong ko trả kết quả
+
+```{python}
+def plus(x, y):
+    a = x + y    
+plus(3, 4)  # không có gì 
+```
+
+Trong quá trình chạy, khi gặp keyword return, function sẽ trả về giá trị và dừng thực hiện, dòng lệnh phía dưới return sẽ không được thực hiên
+
+```{python}
+def divide(x, y):
+    print ("Dividing...")
+    return x/y
+    print ("Done")
+
+divide(6, 3)
+```
+
+**Lưu ý:** Biến khai báo trong function là **local variable** và chỉ có thể truy cập được **bên trong** function đó
+
+**Docstring**
+
+Python cho phép chúng ta add comment vào function, module... thông qua *`docstring`*
+
+```{python}
+def square(x):
+    """
+    Tính bình phương của 1 giá trị
+    """
+    y = x**2
+    return y
+
+square(-1)
+```
+
+- Có thể gọi help trong hàm 
+
+```{python}
+#| eval: false
+?square
+```
+
+### `Lambda` expression
+
+**Lambda expression** cho phép chúng ta tạo 1 function đơn giản chỉ trong 1 dòng mà ko cần khai báo theo cấu trúc `def`. Cấu trúc này tương tự như hàm `lambda` trong R
+
+Ví dụ 2 hàm
+
+```{python}
+# function 1 
+def minus(x, y):
+    a = x - y
+    return a
+# func2
+minus2 = lambda x, y: x-y # Dấu : tương đương với return
+```
+
+```{python}
+minus(3, 4)
+```
+
+```{python}
+minus2(3, 4)
+```
+
+Theo quan điểm cá nhân, Lambda chỉ nên sử dụng trong một số trường hợp chúng ta muốn viết **nhanh và tắt**, không nên dùng khi logic của bạn **phức tạp.**<br>
+Đặc biệt, `lambda` sẽ được sử dụng rất nhiều trong các câu lệnh `map`, `filter`, `reduce` như giới thiệu ở phần tiếp theo
+
+```{python}
+# Hàm xây dựng chuỗi n Fibonacci
+def fib_n(n):
+    if n == 1:
+        my_list = list([0])
+    elif n == 2:
+        my_list = list([0, 1])
+    else: 
+        my_list = list([0])
+        f0 = 0
+        f1 = 1
+        my_range = range(n-1)
+        for i in my_range:
+            f2 = f1 + f0
+            f0 = f1
+            f1 = f2
+            my_list.append(f2)
+    return(my_list)
+```
+
+```{python}
+fib_n(10)
+```
+
+### map và filter
+
+Khi làm việc với kiểu dữ liệu mảng, vd như list, tuple...khi chúng ta cần áp dụng hàm lên cho từng phần tử của mảng này thì có thể sử dụng các hàm như `map`, `filter`. Nhóm hàm này tương tự nhự họ `apply` hoặc `map` trong R
+
+> Trong R, các hàm có concept tương tự là các hàm họ `apply`: `lapply`, `sapply`...
+
+**map()**
+
+> **map(func, seq)** map sẽ áp dụng hàm func cho mỗi phần tử của mảng và trả về kết quả.
+
+```{python}
+#| error: true
+seq = [1, 2, 3, 4, 5]
+# sử dụng hàm square được định nghĩa ở trên 
+square(seq)
+```
+
+Câu lệnh trên sẽ báo lỗi vì ko thể sử dụng function 1 cách thông thường cho những object như list, tuple...Thay vì vậy ta có thể sử dụng như ở dưới
+
+```{python}
+seq2 = map(square, seq)
+list(seq2) # hàm map sẽ trả ra map object, để trả kết quả ra list ta dùng hàm list
+```
+
+Thay vì định nghĩa hàm *square* trước đó, chúng ta có thể kết hợp `lambda expression` luôn vào câu lệnh map ở trên
+
+```{python}
+seq3 = map(lambda x: x*x, seq)
+list(seq3)
+```
+
+**filter()**
+
+> - **filter(func, seq)** gọi hàm với từng phần tử của mảng và trả về danh sách các phần tử mà hàm trả về True
+> - hàm trong filter chỉ có thể trả về True hoặc False
+
+Ví dụ, ta lấy danh sách các phần tử là số chẵn trong list ở dưới
+
+```{python}
+def check_even(x):
+    if x % 2 == 0:
+        return True
+    else:
+        return False
+```
+
+```{python}
+list(filter(check_even, seq))
+```
+
+**map** vs **list comprehension** ?
+
+Chúng ta có thể thấy sự tương đồng rất lớn giữa `map` vừa nêu và `list comprehension` ở phần trên, vd như câu lệnh map ở trên có thể viết lại theo phong cách `list comprehension` như ở dưới
+
+```{python}
+seq4 = [x * x for x in seq]
+seq4
+```
+
+```{python}
+# sử dụng map
+seq3 = map(lambda x: x*x, seq)
+list(seq3)
+```
+
+Vậy khi nào thì sử dụng 1 trong 2 ? <br>
+Thực tế là ko có rule cụ thể nào cho việc này, chúng ta có thể sử dụng 1 số *rule of thumb* như sau:
+- Với những hàm đã được định nghĩa trước đó, sử dụng map thông thường sẽ nhanh hơn (và rõ ràng hơn)
+- Khi sử dụng expression, vd so sánh các phần tử với 1 giá trị, thông thường sử dụng `list comprehension` sẽ nhanh và rõ ràng hơn
+
+Test thử với hàm `%timeit` - hàm để check thời gian execution của 1 câu lệnh
+
+```{python}
+%timeit L = map(square, seq)
+```
+
+```{python}
+%timeit L = [x * x for x in seq]
+```
+
+## Lưu trữ file
+
+Để ghi file, ta phải tạo object và lưu trữ kết quả vào file mới được tạo.
+
+```{python}
+my_file = open('output.txt', 'w') # w is write
+```
+
+```{python}
+lines = 'This is my first example'
+my_file.write(lines)
+```
+
+Ngoài ra, Python cho phép sử dụng library `pickle` để lưu trữ bất kỳ loại file nào
+
+```{python}
+import pickle
+```
+
+```{python}
+t = [1,2,3]
+s = pickle.dumps(t) # dumps: dump string
+```
+
+```{python}
+my_load = pickle.loads(s) #loads: loads string
+```
+
+## Pipe object
+
+Bất kỳ phần mềm nào có thể khởi động từ shell đều có thể khởi động từ Python sử dụng pipe object
+
+```{python}
+import os
+cmd = 'dir'
+os.popen(cmd)
+```
+
+## Các vấn đề khác
+
+```{python}
+# Kiểm tra thư mục làm việc
+import os as os
+```
+
+```{python}
+os.getcwd()
+```
+
+```{python}
+# Kiểm tra các biến trong môi trường làm việc
+globals()
+```
+
+```{python}
+#Set working directory
+import os as os
+os.chdir("D:")
+```
+
+```{python}
+#List file trong directory
+os.listdir()
+```
+

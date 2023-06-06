@@ -1,0 +1,416 @@
+---
+title: Giới thiệu cơ bản về Scikit learn
+eval: false
+---
+
+
+
+## Giới thiệu cơ bản
+
+### Giới thiệu
+
+`sklearn` là một package rất mạnh trong Python cho phép làm việc với nhiều mô hình machine learning. Xây dựng mô hình dự báo trong `sklearn` được chuẩn hóa hơn trong `R` và có các đặc điểm sau.
+
+- Ma trận biến đầu vào (features matrix): Chỉ nhận dạng số và là dạng array 2 chiều
+- Mảng giá trị dự báo (target array): Chỉ nhận dạng số
+
+So với `R` cho phép dữ liệu đầu vào là `dataframe`, đây là các khác biệt rất lớn.
+
+Các bước thực hiện mô hình dự báo với sklearn có thể khái quát như sau:
+
+1. Lựa chọn mô hình dự báo
+2. Lựa chọn tham số cho mô hình
+3. Chia dữ liệu thành ma trận biến đầu vào và mảng giá trị dự báo
+4. Fit mô hình với hàm `fit`
+5. Áp dụng mô hình cho dữ liệu mới với `predict`
+
+### Ví dụ về regression
+
+```{python}
+import matplotlib.pyplot as plt
+import numpy as np
+plt.style.use('seaborn')
+%matplotlib inline
+rng = np.random.RandomState(50)
+x = 10 * rng.rand(50)
+y = 2 * x - 1 + rng.randn(50)
+plt.scatter(x, y)
+```
+
+**Xây dựng mô hình với sklearn**
+
+```{python}
+# Step 1: Lựa chọn mô hình
+from sklearn.linear_model import LinearRegression
+# Step 2: Lựa chọn parameter, cho phép fit offset
+model = LinearRegression(fit_intercept = True)
+model
+```
+
+```{python}
+# Step 3: Chia data thành matrix features và target array
+X = x[:, np.newaxis]
+```
+
+**Lưu ý**: `np.newaxis` cho phép tăng thêm 1 chiều của 1 array. Vì dữ liệu `X` đầu vào yêu cầu mảng 2 chiều, nên cần phải sử dụng `np.newaxis` để tăng chiều của X
+
+```{python}
+X.shape
+```
+
+```{python}
+x.shape
+```
+
+```{python}
+# Step 4: Fit model
+model.fit(X, y)
+```
+
+```{python}
+# Coefficient
+model.coef_
+```
+
+```{python}
+# Intercept
+model.intercept_
+```
+
+```{python}
+# Step 5: Dự báo trên tập mới
+xfit = np.linspace(-1, 11)
+# Chuyển sang dạng feature matrix
+Xfit = xfit[:, np.newaxis]
+yfit = model.predict(Xfit)
+```
+
+```{python}
+plt.scatter(x,y)
+plt.plot(xfit,yfit)
+```
+
+### Ví dụ về bài toán phân loại
+
+```{python}
+from sklearn.datasets import load_iris
+iris = load_iris()
+```
+
+```{python}
+X = iris.data
+y = iris.target
+```
+
+```{python}
+from sklearn.neighbors import KNeighborsClassifier
+model = KNeighborsClassifier(n_neighbors = 1)
+```
+
+```{python}
+model.fit(X, y)
+```
+
+```{python}
+y_model = model.predict(X)
+```
+
+```{python}
+# Đánh giá accuracy
+from sklearn.metrics import accuracy_score
+accuracy_score(y, y_model)
+```
+
+### Ví dụ với train test (hold out)
+
+Ta tiếp tục sử dụng mô hình k-nearest neighborshood nhưng sử dụng train, test
+
+```{python}
+from sklearn.model_selection import train_test_split
+X1, X2, y1, y2 = train_test_split(X, y, random_state = 0,
+                                 train_size = 0.5)
+```
+
+```{python}
+model.fit(X1, y1)
+```
+
+```{python}
+y2_model = model.predict(X2)
+```
+
+```{python}
+accuracy_score(y2, y2_model)
+```
+
+**Cross validation**
+
+```{python}
+from sklearn.model_selection import cross_val_score
+cross_val_score(model, X, y, cv = 5)
+```
+
+### Grid search
+
+Khi sử dụng mô hình dự báo, ta thường sử dụng `grid search` khi `tuning`
+
+```{python}
+# Tạo data.frame
+import numpy as np
+def make_data(N, err=1.0, rseed=1):
+            # randomly sample the data
+            rng = np.random.RandomState(rseed)
+            X = rng.rand(N, 1) ** 2
+            y = 10 - 1. / (X.ravel() + 0.1)
+            if err > 0:
+                y += err * rng.randn(N)
+            return X, y
+X, y = make_data(40)
+```
+
+```{python}
+# Chọn mô hình
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+def PolynomialRegression(degree=2, **kwargs):
+    return make_pipeline(PolynomialFeatures(degree),
+                         LinearRegression(**kwargs))
+```
+
+```{python}
+from sklearn.model_selection import GridSearchCV
+param_grid = {'polynomialfeatures__degree': np.arange(21),
+              'linearregression__fit_intercept': [True, False],
+              'linearregression__normalize': [True, False]}
+```
+
+```{python}
+ grid = GridSearchCV(PolynomialRegression(), param_grid, cv=7)
+```
+
+```{python}
+grid.fit(X,y)
+```
+
+```{python}
+grid.best_params_
+```
+
+Trực quan hóa kết quả mô hình
+
+```{python}
+model = grid.best_estimator_
+```
+
+```{python}
+y_predict = model.fit(X, y).predict(X)
+```
+
+```{python}
+plt.scatter(X.ravel(), y)
+plt.scatter(X, y_predict)
+```
+
+### Feature Engineering
+
+#### Categorical
+
+Sử dụng onehot-encoding
+
+```{python}
+ data = [{'price': 850000, 'rooms': 4, 'neighborhood': 'Queen Anne'},
+           {'price': 700000, 'rooms': 3, 'neighborhood': 'Fremont'},
+           {'price': 650000, 'rooms': 3, 'neighborhood': 'Wallingford'},
+           {'price': 600000, 'rooms': 2, 'neighborhood': 'Fremont'}]
+# Trước khi transform
+import pandas as pd
+pd.DataFrame(data)
+```
+
+Sử dụng onehot-encoding để biến đổi category
+
+```{python}
+from sklearn.feature_extraction import DictVectorizer
+```
+
+```{python}
+vec = DictVectorizer(sparse = False, dtype = int)
+vec.fit_transform(data)
+```
+
+#### Missing data
+
+```{python}
+from numpy import nan
+X = np.array([[ nan, 0,   3  ],
+                      [ 3,   7,   9  ],
+                      [ 3,   5,   2  ],
+                      [ 4,   nan, 6  ],
+                      [ 8,   8,   1  ]])
+y = np.array([14, 16, -1,  8, -5])
+X
+```
+
+```{python}
+from sklearn.preprocessing import Imputer 
+```
+
+```{python}
+imp = Imputer(strategy = 'mean')
+X2 = imp.fit_transform(X)
+X2
+```
+
+```{python}
+from sklearn.linear_model import LinearRegression
+model = LinearRegression().fit(X2, y)
+model.predict(X2)
+```
+
+### Pipeline
+
+Điểm rất mạnh của Python là cho phép xây dựng pipeline khi xây dựng mô hình. Với mô hình trên, giả sử ta muốn thực hiện các bước như sau
+
+1. Thay missing value với mean
+2. Biến đổi feature thành dạng bình phương
+3. Xây mô hình hồi quy
+
+```{python}
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
+model = make_pipeline(Imputer(strategy = 'mean'),
+                      PolynomialFeatures(degree = 2),
+                      LinearRegression())
+```
+
+```{python}
+model.fit(X, y)
+```
+
+```{python}
+print(y)
+print(model.predict(X))
+```
+
+## Khái quát về các module của sklearn
+
+Trong sklearn có các module lớn sau:
+
+- `dataset`: Data mẫu trong mô hình
+    - `load_iris`
+    - `load_wine`
+    - `load_boston`
+    - `load_breast_cancer`
+    - `load_diabetes`
+ 
+ Ngoài ra, modules `dataset` còn cho phép tạo sample mẫu như sau:
+ 
+     - `make_blobs`: Tạo blobs cho cluster
+     - `make_regression`: Tạo dataset cho regression
+     - `make_multiple_classification`: Multi class problem
+ 
+- `preprocessing`: Feature Engineering data
+    - `Binarizer`: Bins dữ liệu thành dạng 0,1 dựa vào threshold
+    - `KBinsDiscretizer`: Bins dữ liệu
+    - `LabelEncoder`: Encode thành dạng 0..n-1
+    - `QuantileTransformer`: Chuyển dữ liệu thành dạng Quantile
+    - `StandardScaler`: Chuyển về z-score
+    - `maxabs_scale`: Chuyển về dạng [-1.1]
+    - `minmax_scale`: Chuyển dữ liệu về bất cứ scale nào
+- `cluser`: Unsupervised learning
+    - `k_means`
+- `decomposiiton`: Tổng hợp các phương pháp giảm biên
+    - `FactorAnalysis`: FA
+    - `PCA`
+- `ensemble`: Các phương pháp ensemble
+    - `GradientBoostingClassifier`
+    - `GradientBoostingRegressor`
+- `feature_extraction`: Chiết xuất biến từ images và text
+    - `DictVectorizer`
+- `impute`: Impute mising value
+- `linear_moel`: Mô hình hồi quy
+    - `LinearRegression`: OLS
+- `metrics`: Các chỉ số đánh giá mô hình
+    - `accuracy_score`
+    - `auc`
+    - `roc_auc_score`
+    - `roc_curve`
+    - `r2_score`
+    - `mean_squared_error`
+- `model_selection`: Module hỗ trợ chia train, test, cross-validation, optimization, validation
+    - `train_test_split`
+    - `LeaveOneOut`
+    - `StratifiedKFold`
+    - `cross_validate`: Đánh giá score dựa vào cross validation
+- `neighbours`: Sử dụng phương pháp nearest neighbors
+- `neural_network`
+- `pipeline`: Module sử dụng pipeline trong machine learning
+- `svm`: Support Vector Machines
+- `tree`: Decision Tree
+    - DecisionTreeClassifier
+    - DecisionTreeRegressor
+    - export_graphviz: Export tree dưới dạng DOT
+
+## Lưu mô hình để sử dụng
+
+Ta có thể lưu mô hình từ sklearn để sử dụng sau với package pickle
+
+```{python}
+from sklearn.datasets import load_iris
+from sklearn import svm
+```
+
+```{python}
+model = svm.SVC(gamma = 'scale', probability = True)
+iris = load_iris()
+```
+
+**Lưu ý**: Đặt `probability = True` khi đặt class prediction để có thể dự báo điểm xác suât
+
+```{python}
+X, y = iris.data, iris.target
+```
+
+```{python}
+model.fit(X, y)
+```
+
+```{python}
+# Save mô hình
+import pickle
+s = pickle.dumps(model)
+```
+
+```{python}
+model_2 = pickle.loads(s)
+```
+
+```{python}
+model_2.predict(X[1:100])
+```
+
+```{python}
+model_2.predict_proba(X[:10])
+```
+
+**Save với joblist**
+
+```{python}
+from sklearn.externals import joblib
+file_name = "final_model.sav"
+joblib.dump(model, file_name)
+```
+
+```{python}
+loaded_model = joblib.load('final_model.sav')
+```
+
+```{python}
+loaded_model.predict(X[:150])
+```
+
+## Tài liệu tham khảo
+
+https://scikit-learn.org/stable/modules/classes.html
+

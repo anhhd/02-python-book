@@ -1,0 +1,315 @@
+---
+title: Giới thiệu về Numpy
+---
+
+
+
+## Cơ bản về numpy 
+
+Numpy là viết tắt của `Numerical Python`, là một thư viện hỗ trợ tính toán trong Python  
+
+```{python}
+L1 = list(range(0, 10))
+```
+
+```{python}
+L1
+```
+
+```{python}
+type(L1)
+```
+
+```{python}
+type(L1[0])
+```
+
+Chuyển từ list của Python object thành array
+
+```{python}
+import numpy as np
+L2 = np.array(range(0, 10))
+L2
+```
+
+```{python}
+type(L2)
+```
+
+**Lưu ý**: Khi làm việc với các dữ liệu dạng `vector` như R, ta cần chuyển định dạng `list` thành dạng `np.array`
+
+## Tạo array cơ bản
+
+```{python}
+# Tạo array zero
+np.zeros(10, dtype = int)
+```
+
+```{python}
+# Tạo array 1
+np.ones((2,3), dtype = float)
+```
+
+**Lưu ý**: `dtype` là viết tắt của data type object - quy định kiểu cấu trúc dữ liệu trong array
+
+```{python}
+# Tạo array 2x3 có giá trị 3.14
+```
+
+```{python}
+np.full((2,3), 3.14)
+```
+
+```{python}
+# Chuỗi từ 2:20
+np.arange(2,20, 2)
+```
+
+```{python}
+# Array 3x3 giá trị random trong khoảng 0,1 (uniform distribution)
+```
+
+```{python}
+np.random.random((3,3))
+```
+
+```{python}
+# Random theo phân phối chuẩn
+```
+
+```{python}
+np.random.normal(0,1, (3,3))
+```
+
+```{python}
+# Random integer
+np.random.randint(1, 10, (3,3))
+```
+
+```{python}
+# Chia vector từ 0-5 thành 50 phần bằng nhau
+np.linspace(0,5,50)
+```
+
+## Các thuộc tính của array
+
+Array có 3 thuộc tính sau:
+- ndim: Số lượng chiều trong mảng
+- shape: Chi tiết chiều trong mảng
+- size: Số lượng phần tử trong mảng
+
+```{python}
+import numpy as np
+L1 = np.random.randint(10, size = (6))
+L2 = np.random.normal(0, 1, size = (2,3))
+L3 = np.random.normal(0, 1, size = (2,3,4))
+L1
+L2
+L3
+```
+
+```{python}
+L1
+```
+
+```{python}
+L1.ndim
+```
+
+```{python}
+L2.shape
+```
+
+```{python}
+L3.size
+```
+
+**Lưu ý**: Trong Python, khi các thuộc tính của object, ta sử dụng không có dấu `()`, với hàm, ta sử dụng dấu `()`
+
+## Trích xuất dữ liệu trong array
+
+Trong array của numpy, ta chiết xuất dữ liệu tương tự như R. Tuy nhiên, do Python đánh số index từ 0 nên cần lưu ý.
+
+```{python}
+my_array = np.random.randint(10, size = (3,3))
+```
+
+```{python}
+my_array
+```
+
+```{python}
+my_array[0, 1]
+```
+
+```{python}
+my_array[1, 0]
+```
+
+```{python}
+my_array[2,1]
+```
+
+### Chiết xuất array theo chuỗi
+
+```{python}
+x = np.arange(1, 10)
+```
+
+```{python}
+x
+```
+
+**Lưu ý**: Khi sử dụng `arange` trong numpy, chuỗi sẽ được thể hiện dạng `[a, b)`  
+
+```{python}
+x[:5] #5 thành phần đầu tiên
+```
+
+```{python}
+x[2:5] # Vị trí 3,4,5
+```
+
+```{python}
+x[5:] # Tất cả các thành phần sau vị trí 5
+```
+
+```{python}
+x[::2] # Các thành phần ở vị trị lẻ
+```
+
+```{python}
+x[::3] # Các thành phần cách nhau 3 chỉ số
+```
+
+```{python}
+x[1::2] # Các thành phần ở vị trí lẻ, bắt đầu từ số 2
+```
+
+## Thay đổi chiều trong array
+
+Sử dụng phương pháp `reshape()`
+
+```{python}
+x = np.arange(1, 10)
+```
+
+```{python}
+type(np.array([1, 10]))
+```
+
+```{python}
+x
+```
+
+```{python}
+x.reshape(3,3)
+```
+
+## Fancy index
+
+Ý tưởng của `fancy index` là sử dụng các vị trí trong array cũ để tạo array mới, trong khi đó, chiều của array mới được tạo thành từ `fancy index`
+
+```{python}
+x = np.arange(1, 10)
+x
+```
+
+```{python}
+fancy_index = np.array([[0,2], [7,4]])
+fancy_index
+```
+
+```{python}
+x[fancy_index]
+```
+
+## Các phép toán trong array
+
+```{python}
+# Sort
+x = np.array([1,3,2,9,6])
+```
+
+```{python}
+np.sort(x)
+```
+
+```{python}
+# Sort với mảng hai chiều
+y = np.random.randint(1,10, size = (3,3))
+```
+
+```{python}
+y
+```
+
+```{python}
+np.sort(y, axis = 0) # Sort theo cột
+```
+
+```{python}
+np.sort(y, axis = 1) # Sort theo dòng
+```
+
+Các phép toán trong array của Python tương tự như R
+
+## Biến đổi từ dataframe sang array
+
+Các phép toán ứng dụng của machine learning chủ yếu làm việc với array. Trong khi đó, cấu trúc dữ liệu cơ bản khi làm việc về phân tích và khám phá dữ liệu lại là pd.DataFrame và pd.Series. Do đó, cần phải thành thạo việc biến đổi qua lại các kiểu dữ liệu trên
+
+### List sang array
+
+```{python}
+my_list = [1,2,3,4]
+```
+
+```{python}
+type(my_list)
+```
+
+```{python}
+# Biến đổi sang array
+np.array(my_list)
+```
+
+### Series & DataFrame sang array
+
+```{python}
+import pandas as pd
+my_df = pd.DataFrame({
+    'x' : [1,2,3],
+    'y' : ['a', 'b', 'c']
+})
+my_df
+```
+
+```{python}
+# DF sang array
+my_df.values
+```
+
+```{python}
+type(my_df.values)
+```
+
+```{python}
+new_array = my_df.values
+new_array.shape
+```
+
+```{python}
+# Series sang array
+series_array =  my_df['x'].values
+```
+
+```{python}
+series_array.shape
+```
+
+**Lưu ý**: Khi chuyển từ dạng Series sang array sẽ tạo thành 1 array 1 chiều. Do đó, khi làm việc với các thuật toán trong sklearn cần biến đổi shape để trở thành array dạng (n, 1) 
+
+```{python}
+series_array.reshape(3, 1).shape
+```
+

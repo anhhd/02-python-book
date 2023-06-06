@@ -1,0 +1,941 @@
+---
+title: Pandas
+eval: false
+---
+
+
+
+## Cơ bản về pandas
+
+`Pandas` là viết tắt của `panel data`, pandas dataframe có thể coi như `dataframe` trong R
+
+```{python}
+# %matplotlib inline
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Option hiển thị tối đa 8 dòng
+pd.options.display.max_rows = 8
+```
+
+```{python}
+# Kiểm tra version pandas
+pd.__version__
+```
+
+`dataframe` có thể được tạo ra từ các `Series`. `Series` có thể coi tương tự như `vector` trong R
+
+```{python}
+# Tạo các data cần thiết
+# series
+population = pd.Series({'Germany': 81.3, 'Belgium': 11.3, 'France': 64.3, 
+                        'United Kingdom': 64.9, 'Netherlands': 16.9})
+population
+```
+
+```{python}
+# dataframe
+data = {'country': ['Belgium', 'France', 'Germany', 'Netherlands', 'United Kingdom'],
+        'population': [11.3, 64.3, 81.3, 16.9, 64.9],
+        'area': [30510, 671308, 357050, 41526, 244820],
+        'capital': ['Brussels', 'Paris', 'Berlin', 'Amsterdam', 'London']}
+countries = pd.DataFrame(data)
+countries
+```
+
+### Các cấu trúc dữ liệu cơ bản 
+
+- List
+
+```{python}
+x = ['One', "Two"]
+x
+```
+
+```{python}
+type(x)
+```
+
+- Dictionary: Có thêm index và không nhất thiết phải độ dài bằng nhau
+
+```{python}
+df = {'state': ['Ohio', 'Ohio', 'Nevada'],
+     'year': [2000, 2001, 2002, 2003]}
+df
+```
+
+#### Series
+
+Series là mảng một chiều, `Series` có thể chứa `index` và `values`. Series có thể coi như là mảng một chiều mở rộng của numpy array
+
+```{python}
+import pandas as pd
+obj = pd.Series([4,5,-7, 6])
+obj
+```
+
+```{python}
+obj.values
+```
+
+```{python}
+obj.index
+```
+
+```{python}
+# Lấy thành phần từ 1 đến 2
+obj[1:3]
+```
+
+```{python}
+# Đổi lại index
+obj.index = ['a','b','c','d']
+obj.index
+```
+
+```{python}
+obj['a']
+```
+
+```{python}
+obj[obj > 0]
+```
+
+```{python}
+obj*2
+```
+
+```{python}
+pd.isnull(obj)
+```
+
+```{python}
+obj['a']
+```
+
+```{python}
+pd.notnull(obj)
+```
+
+**Biến category**: Trong pandas cho phép sử dụng biến category tương tự như factor của R
+
+```{python}
+s = pd.Series(["a","b","c","a"], dtype="category")
+s.describe()
+```
+
+#### DataFrame 
+
+DataFrame có cấu trúc tương tự như R dataframe
+
+```{python}
+# Tạo dictionary trong Python
+data = {'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+'year': [2000, 2001, 2002, 2001, 2002],
+'pop': [1.5, 1.7, 3.6, 2.4, 2.9]}
+```
+
+```{python}
+data
+```
+
+```{python}
+# Convert sang data.frame
+frame = pd.DataFrame(data)
+```
+
+```{python}
+frame
+```
+
+```{python}
+frame2 = pd.DataFrame(data, columns=['year', 'state', 'pop', 'debt'],
+                  index=['one', 'two', 'three', 'four', 'five'])
+```
+
+```{python}
+frame2
+```
+
+### Làm việc với DataFrame
+
+#### Chọn một biến
+
+```{python}
+frame2.year
+```
+
+```{python}
+frame2['year']
+```
+
+```{python}
+frame2[['year', 'state']]
+```
+
+#### Tạo biến mới
+
+```{python}
+frame2['debt'] = 16.5
+frame2
+```
+
+```{python}
+frame2['debt'] = np.arange(5.)
+frame2
+```
+
+#### Index với loc và iloc
+
+```{python}
+data = pd.Series(['a', 'b', 'c'], index = [1,3,5])
+```
+
+```{python}
+data
+```
+
+```{python}
+# Sử dụng index
+data[1]
+```
+
+```{python}
+data.loc[1]
+```
+
+```{python}
+# Sử dụng index theo vị trí, không phụ thuộc vào index
+data.iloc[1]
+```
+
+```{python}
+data.iloc[2]
+```
+
+## Import dữ liệu trong pandas
+
+### Kết nối với database
+
+**Đọc dữ liệu từ Database**
+
+```python
+# Do not run
+import pyodbc
+conn = pyodbc.connect(
+    r'DRIVER={ODBC Driver 13 for SQL Server};'
+    r'SERVER=ADMINMI-JTBJEPG;' # Name of server
+    r'DATABASE=learningsql;'   # Data base
+    r'UID=sa;'                 # User
+    r'PWD=123456'              # Password
+    )
+# cursor = conn.cursor()
+import pandas as pd
+
+df = pd.read_sql_query('SELECT * FROM ACCOUNT', conn)
+df.head
+df.describe()
+```
+
+**Ghi dữ liệu vào database**
+
+```{python}
+#| eval: false
+tip = pd.read_csv("99_dataset/tips.csv")
+from sqlalchemy import create_engine
+
+con = create_engine('mssql+pyodbc://sa:123@ADMIN/analytics?driver=ODBC Driver 13 for SQL Server')
+tip.to_sql('tip', con, if_exists='replace')
+```
+
+### Import từ csv
+
+```{python}
+#| eval: false
+df = pd.read_csv("file.csv")
+```
+
+- Kiểm tra các kiểu dữ liệu có thể đọc
+
+```{python}
+?pd.read_*
+```
+
+```{python}
+?pd.read_csv
+```
+
+## Các câu lệnh cơ bản với dataframe 
+
+```{python}
+from sklearn import datasets
+df = datasets.load_iris()
+```
+
+```{python}
+import pandas as pd
+```
+
+```{python}
+iris = pd.DataFrame(df.data,
+                   columns = df.feature_names)
+iris.head(3)
+```
+
+```{python}
+iris.columns
+```
+
+### Rename
+
+**Cấu trúc**:
+`df.rename(columns = {old_var : new_var})`
+
+```{python}
+iris2 = iris.rename(columns = {'sepal length (cm)' : 'sepal_length',\
+                   'sepal width (cm)' : 'sepal_width',
+                   'petal length (cm)' : 'petal_length',
+                   'petal width (cm)' : 'petal_width'})
+```
+
+```{python}
+iris2.columns
+```
+
+### Tạo biến mới 
+
+```{python}
+iris2['new_var'] = 17
+```
+
+```{python}
+iris2.head(3)
+```
+
+```{python}
+# Drop biến
+iris2 = iris2.drop('new_var',\
+                  axis = 'columns')
+```
+
+```{python}
+iris2.head(3)
+```
+
+- Trong `pandas`, do DF được xử lý theo cả hai chiều nên cần khai báo axis = 'columns'
+- Có thể rename index, khi đó khai báo `axis = 'index'`
+
+```{python}
+iris2.rename({1:'a'}, axis = 'index').head(4)
+```
+
+### Select 
+
+- Trong pandas, cách chọn biến không cho phép sử dụng `lazy evaluation` nên phép select phải liệt kê các cột tương tự như trong R base
+
+**R**
+
+select(df, var1, var2)
+
+select(df, -var3)
+
+**Python**
+
+df[['var1', 'var2']]
+
+df.drop('var3', 1)
+
+```{python}
+col_var = ['sepal_length', 'sepal_width']
+```
+
+```{python}
+iris2[col_var].head(4)
+```
+
+```{python}
+# Bỏ biến sepal_length
+iris2.drop('sepal_length', 1).head(3)
+```
+
+**Lưu ý**: Do dataframe của Python đánh dấu theo hai chiều: 0 - dòng, 1 - cột. Do đó, cần thêm index 1 để thể hiện drop theo cột
+
+- Select trong pandas cho phép tương tự `select_if` trong dplyr
+
+```{python}
+iris2.get_dtype_counts()
+```
+
+```{python}
+iris2.select_dtypes(include = ['float64']).head(3)
+```
+
+- Chọn theo row cho phép sử dụng toán tử `:` như R
+
+```{python}
+iris2[1:3]
+```
+
+#### Select nâng cao
+
+Trong pandas, ta có thể lọc biến nâng cao với 3 options: `loc`, `iloc` và `ix`. 
+
+- `iloc`: Cho phép lấy biến theo vị trí dạng integer
+- `loc`: Cho phép lọc theo tên 
+- `ix`: Cho phép lọc theo cả hai cách trên. Tuy nhiên, ix ngày càng ít dùng
+
+```{python}
+iris2
+```
+
+```{python}
+iris2.iloc[:3, :2]
+```
+
+```{python}
+iris2.loc[:4,'sepal_width':'petal_width']
+```
+
+```{python}
+iris2.ix[:4, 'sepal_width':'petal_width']
+```
+
+### Arrange
+
+Không giống như R, `sort_values` là `method` trong Python
+
+`df.sort_values('var1')`
+
+`df.sort_values('var1', ascending=False)`
+
+```{python}
+iris2.sort_values('sepal_length').head(3)
+```
+
+### Filter
+
+**R**
+
+filter(df, var > 20000 & var < 30000) 
+
+filter(df, var == 'string') # df %>% filter(var != 'string')
+
+df %>% filter(var != 'string')
+
+df %>% group_by(group) %>% filter(sum(var) > 2000000)
+
+**Python**
+
+df[(df['var'] > 20000) & (df['var'] < 30000)]
+
+df[df['var'] == 'string']
+
+df[df['var'] != 'string']
+
+df.groupby('group').filter(lambda x: sum(x['var']) > 2000000)
+
+Cấu trúc filter của Pandas tương tự như R base
+
+```{python}
+iris2[iris2['sepal_length'] <10]
+```
+
+```{python}
+iris2.filter('sepal_length')
+```
+
+- `Pandas` cho phép filter theo hai cách là `loc` và `iloc`
+    - `loc` cho phép lọc theo tên
+    - `iloc` cho phép lọc theo vị trí
+
+```{python}
+iris2.head(3)
+```
+
+```{python}
+iris2.index
+```
+
+```{python}
+# Lấy theo iloc của index
+iris2.iloc[2]
+```
+
+```{python}
+iris2[iris2['sepal_length'] == 5.1]
+```
+
+**Tìm hiêu thêm về loc và iloc**:
+
+- `df.loc[row_index, column_index]`: cho phép lựa chọn theo thứ tự và sử dụng toán tử `:` như R nhưng chỉ cho phép từ `index_1` đến `index_2-1`
+
+- `df.iloc[row_index, column_index]`
+
+```{python}
+iris2.iloc[2:5, 0:2]
+```
+
+```{python}
+iris2.loc[2:5, ['sepal_length', 'petal_length']]
+```
+
+Các phương pháp này có thể được sử dụng trong việc gán
+
+```{python}
+iris2.iloc[1:4, 3:4] = 1
+```
+
+```{python}
+iris2.iloc[1:4, 3:4]
+```
+
+### group by
+
+**R**
+
+df %>% group_by(group) 
+
+df %>% group_by(group1, group2)
+
+df %>% ungroup()
+
+**Python**
+
+df.groupby('group1')
+
+df.groupby(['group1', 'group2'])
+
+df.reset_index() 
+
+df.groupby('group1', as_index=False)
+
+```{python}
+df = pd.DataFrame({'group': ['A', 'B', 'C', 'A', 'B', 'C'],
+                    'value1': [3,2,1,4,5,3],
+                     'value2': [2,4,3,2,1,5]})
+```
+
+```{python}
+df.head(3)
+```
+
+```{python}
+df.groupby('group')
+```
+
+#### Group summarise
+
+**R**
+
+df %>% group_by(group) %>% summarise(mean_var1 = mean(var1))
+
+df %>% group_by(group1, group2) %>% summarise(mean_var1 = mean(var1), 
+                                              sum_var1 = sum(var1), 
+                                              count_var1 = n())
+
+**Python**
+
+- df.groupby('group1')['var1'].agg({'mean_col' : np.mean()})`
+
+- `df.groupby(['group1', 'group2'])['var1]'].agg(['mean', 'sum', 'count'])`
+
+Tương ứng như `group_by` trong `dplyr`, `groupby` trong Python cho phép nhóm và thực hiện các câu lệnh tương ứng. Khi không đặt điều kiện cụ thể, nhóm aggregate sẽ áp dụng cho tất cả các biến
+
+```{python}
+df.groupby('group').aggregate(np.mean)
+```
+
+```{python}
+df.groupby('group')['value1'].agg(['mean', 'sum', 'max'])
+```
+
+```{python}
+# Summarise chỉ với var1 và đặt tên
+df.groupby('group')['value1'].agg({'mean_value1': 'mean',
+                                  'sum_value1': np.sum})
+```
+
+```{python}
+df.groupby('group').aggregate(np.mean)
+```
+
+#### Group mutate
+
+**R**
+
+df %>% group_by(group) %>% mutate(mean_var1 = mean(var1))
+
+**Python**
+
+df.groupby('group')['var1'].transform(np.mean)
+
+```{python}
+# Biến đổi biến value thành mean trong từng nhóm
+df.groupby('group').transform('mean')
+```
+
+```{python}
+df['mean_value1'] = df.groupby('group')['value1'].transform('mean')
+```
+
+```{python}
+df
+```
+
+- Tạo thêm biến mới
+
+```{python}
+# Tạo hàm normalize
+def normalize(x):
+    return (x - np.mean(x)) / np.std(x)
+```
+
+```{python}
+x = [3,2,3,1,3,4,5,6,8]
+```
+
+```{python}
+np.mean(x)
+```
+
+```{python}
+np.std(x)
+```
+
+```{python}
+normalize(x)
+```
+
+```{python}
+df.groupby('group').transform(normalize)
+```
+
+## Join
+
+Tương tự như R, join trong Python có thể dùng hàm `merge`
+
+### Cùng tên key
+
+```{python}
+df1 = pd.DataFrame({'employee': ['Bob', 'Jake', 'Lisa', 'Sue'],
+                    'group': ['Accounting', 'Engineering', 'Engineering', 'HR']})
+df2 = pd.DataFrame({'employee': ['Lisa', 'Bob', 'Jake'],
+                    'hire_date': [2004, 2008, 2012]})
+print(df1); print(df2)
+```
+
+```{python}
+pd.merge(df1, df2)
+```
+
+**Lưu ý**: Khi dùng merge, sẽ tự động bỏ các trường không chứa trong cả 2 bảng. Nếu muốn chuyển thành `left_join`, cần thêm option `how`
+
+```{python}
+pd.merge(df1, df2, how = "left")
+```
+
+```{python}
+pd.merge(df1, df2, how = 'right')
+```
+
+### Khác tên key
+
+```{python}
+df3 = pd.DataFrame({'name': ['Bob', 'Jake', 'Lisa', 'Sue'],
+                    'salary': [70000, 80000, 120000, 90000]})
+print(df1); print(df3);
+```
+
+```{python}
+pd.merge(df1, df3, left_on = 'employee', right_on = 'name')
+```
+
+```{python}
+# Drop name khi không cần thiết
+pd.merge(df1, df3, left_on = 'employee', right_on = 'name').drop('name', axis = 1)
+```
+
+## Ghép dữ liệu
+
+### Ghép dòng
+
+```{python}
+df1 = pd.DataFrame(
+{"a" : [4 ,5, 6], 
+"b" : [7, 8, 9]},    
+index = [1, 2, 3])
+
+df2 = pd.DataFrame({
+    "a" : [1,2],
+    "b" : [8, 9]
+})
+print(df1); print(df2)
+```
+
+```{python}
+import pandas as pd
+pd.concat([df1, df2])
+```
+
+```{python}
+df3 = pd.DataFrame({
+    "c" : ['x', 'y', 'z']})
+```
+
+```{python}
+pd.concat([df1, df3], axis = 1)
+```
+
+**Lưu ý**: Xảy ra lỗi trên vì df1 và df3 đang có 2 hệ thống index khác nhau. Muốn concat bình thường cần reset index
+
+```{python}
+pd.concat([df1.reset_index(), df3], axis = 1)
+```
+
+### Tổng hợp dữ liệu
+
+```{python}
+my_df = pd.DataFrame({
+    'group' : np.random.randint(1,5, 20),
+    'x' : np.random.normal(10,1, 20),
+    'y' : np.random.normal(1, 10, 20)
+})
+my_df
+```
+
+```{python}
+# Summary toàn bộ data.frame
+my_df.describe()
+```
+
+```{python}
+#Summary theo nhóm
+my_df.groupby('group')['x'].describe()
+```
+
+```{python}
+# Summary theo nhóm, chuyển thành data.frame
+my_df.groupby('group')['x'].describe().unstack()
+```
+
+### Aggregate, filter, transform & apply
+
+Tương tự như R, Python cũng có thể áp dụng phương pháp: filter, transform, apply
+
+```{python}
+# Set seed
+rng = np.random.RandomState(0)
+df = pd.DataFrame({'key': ['A', 'B', 'C', 'A', 'B', 'C'],
+                    'data1': range(6),
+                    'data2': rng.randint(0, 10, 6)},
+                    columns = ['key', 'data1', 'data2'])
+df
+```
+
+```{python}
+df.groupby('key').aggregate(['min', np.median])
+```
+
+```{python}
+# Tìm min của data1 và max data2
+```
+
+```{python}
+df.groupby('key').aggregate({'data1': 'min',
+                           'data2': np.median})
+```
+
+### Filter
+
+```{python}
+def filter_func(x):
+    return x['data2'].std > 4
+```
+
+```{python}
+#df.groupby('key').std()
+df2 = df.groupby('key').aggregate('std')
+print(df); print(df2)
+df2
+```
+
+### Apply
+
+Toán tử `x/= y` tương ứng với $x = \frac{x}{y}$
+
+```{python}
+def norm_data2(x):
+    x['data1'] /= x['data2'].sum()
+    return x
+```
+
+```{python}
+df.groupby('key').apply(norm_data2)
+```
+
+### Kiểm tra các đặc tính khác của df
+
+```{python}
+df.dtypes
+```
+
+```{python}
+df.info()
+```
+
+```{python}
+# Plot data
+iris2.plot()
+```
+
+```{python}
+iris2['sepal_length'].plot()
+```
+
+### Làm việc với missing value
+
+```{python}
+data_null = pd.Series([1, np.nan, 'hello', None])
+```
+
+```{python}
+data_null.isnull()
+```
+
+```{python}
+df_null = pd.DataFrame([[1, np.nan, 3],
+                        [2, 3, np.nan],
+                        [1,2,3]])
+df_null
+```
+
+```{python}
+# dropna sẽ loại tất cả các dòng chứa missing value
+df_null.dropna()
+```
+
+```{python}
+df_null.dropna(axis = 'columns')
+```
+
+- `fillna`: Cho phép điền giá trị thiếu vào missing value
+
+```{python}
+df_null.fillna(99)
+```
+
+## Pivot table
+
+Tương tự như reshape2 của R với dcast, pandas cho phép sử dụng pivot table
+
+```{python}
+import seaborn as sns
+```
+
+```{python}
+titanic = pd.read_csv('./99_dataset/titanic.csv')
+```
+
+```{python}
+titanic.pivot_table(index = 'sex', columns = 'class',
+                   aggfunc = {'survived': sum,
+                             'fare': 'mean'})
+```
+
+## Melt data
+
+```{python}
+my_df = pd.DataFrame({
+    'id' : [1,2,3],
+    'var1' : [3,4,5],
+    'var2' : ['a', 'a', 'b'],
+    'var3' : ['x', 'y', 'z']
+})
+```
+
+```{python}
+my_df
+```
+
+```{python}
+pd.melt(my_df, 'id')
+```
+
+```{python}
+pd.melt(my_df, ['id', 'var1'])
+```
+
+## Các hàm khác
+
+### Lag
+
+```{python}
+df = pd.DataFrame({
+    'date' : [1,2,3],
+    'value' : [6,7,8]
+})
+df
+```
+
+```{python}
+df['value_1'] = df['value'].shift(1)
+```
+
+```{python}
+df
+```
+
+### Rank
+
+```{python}
+my_df = pd.DataFrame({
+    'id' : [1,2,3],
+    'var1' : [5,4,2],
+    'var2' : ['a', 'a', 'b'],
+    'var3' : ['x', 'y', 'z']
+})
+```
+
+## Lưu dữ liệu
+
+```{python}
+my_df = pd.DataFrame({
+    'x' : [1,2,3],
+    'y' : [3,4,5],
+    'group' : ['a', 'a', 'b']
+})
+```
+
+```{python}
+import pickle 
+```
+
+```{python}
+#| eval: false
+# Save data
+my_df.to_pickle('my_df.pkl')
+```
+
+```{python}
+# Load dữ liệu
+my_df2 = pd.read_pickle('my_df.pkl')
+```
+
+```{python}
+my_df2.head()
+```
+
+## Tài liệu tham khảo
+- https://github.com/jorisvandenbossche/pandas-tutorial
+
+```{python}
+#| eval: false
+list_df = %who_ls DataFrame
+
+for x in list_df[:2]:
+    eval(x)['new'] = 'a'
+    
+list_df[:2]
+```
+

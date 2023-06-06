@@ -1,0 +1,358 @@
+---
+title: sklearn nâng cao
+eval: false
+---
+
+
+
+## Feature engineering
+
+`Feature engineering` là quá trình biến đối dữ liệu thô thành các dữ liệu phái sinh (`features`) có thể thể hiện tốt hơn vấn đề cần giải quyết trong mô hình dự báo, từ đó gia tăng độ chính xác của mô hình trên tập dữ liệu mới.
+
+`Feature engineering` có 4 nhóm lớn:
+- Dữ liệu dạng số
+- Dữ liệu dạng category
+- Dữ liệu text
+- Dữ liệu dạng ảnh
+
+### Dữ liệu dạng số
+
+#### Chuyển sang dạng nhị phân (0,1)
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import Binarizer
+```
+
+```{python}
+iris = pd.read_csv("./99_dataset/iris.csv")
+iris.head()
+```
+
+```{python}
+# Tạo object binarizer
+thre = np.mean(iris['sepal_length'])
+bn = Binarizer(threshold = thre)
+```
+
+```{python}
+new_sepal = bn.fit_transform([iris['sepal_length']])
+type(new_sepal)
+```
+
+```{python}
+iris['new_sepal'] = new_sepal[0] # Chuyển sang dạng array 1 chiều
+```
+
+```{python}
+iris.tail()
+```
+
+#### Binning
+
+Binning trong KBinsDiscretizer có 3 cách chính:
+
+- uniforms: Chía thành n phần có độ rộng bằng nhau $\frac{x_{max} - x_{min}}{n_{bins}}$
+- quantile: Chia them n quantile
+- kmeans: Chia theo tâm gần nhất sử dụng k-means
+
+```{python}
+from sklearn.preprocessing import KBinsDiscretizer
+```
+
+```{python}
+import sklearn 
+sklearn.__version__
+```
+
+**Lưu ý**: 
+- Cần check version của sklearn khi không sử dụng KBinsDiscretizer được
+- Khi làm việc với array 
+
+```{python}
+iris['sepal_length'].values
+```
+
+```{python}
+X = iris.iloc[:, np.arange(4)].values
+```
+
+```{python}
+X[:, 1].reshape(150,1)[:5]
+```
+
+```{python}
+est = KBinsDiscretizer(n_bins = 5,  # Số lượng bins
+                       encode = "ordinal",  # Chia theo ordinal
+                       strategy = "uniform") # Chuyển thành dạng integer
+# est.fit(X)
+sepal_length_new = est.fit_transform(X[:, 1].reshape(150, 1))
+```
+
+```{python}
+np.max(sepal_length_new)
+```
+
+#### Standardization
+
+Biến đổi dữ liệu về dạng normal distribution
+
+```{python}
+from sklearn.preprocessing import StandardScaler
+```
+
+```{python}
+X = np.random.randint(1, 10, 1000).reshape(1000,1)
+```
+
+```{python}
+scaler = StandardScaler()
+```
+
+```{python}
+sns.distplot(X)
+```
+
+```{python}
+new_x = scaler.fit_transform(X)
+```
+
+```{python}
+sns.distplot(new_x)
+```
+
+**Lưu ý**: Với các nhóm hàm biến đổi dữ liệu trước khi vào mô hình, frame work bao giờ cũng như sau:
+
+- Tạo object để transform `transfrom_object`
+- Áp dụng hàm fit với object X
+- Apply `transform_object` vào object mới Y
+
+Trong trường hợp áp dụng thẳng fit và transform object X, ta có thể dùng hàm `fit_transform`
+
+```{python}
+from sklearn.datasets import load_iris
+iris_ml = load_iris()
+```
+
+```{python}
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(iris_ml.data, iris_ml.target, random_state = 0)
+train_row = x_train.shape[0]
+test_row = x_test.shape[0]
+```
+
+```{python}
+from sklearn.preprocessing import StandardScaler
+scl = StandardScaler().fit(x_train[:,1].reshape(train_row, 1))
+```
+
+```{python}
+new_var = scl.transform(x_test[:, 1].reshape(test_row, 1))
+```
+
+**So sánh distribution của hai nhóm**
+
+```{python}
+# Oldvar
+sns.distplot(x_test[:, 1])
+```
+
+```{python}
+# New var
+type(new_var)
+```
+
+```{python}
+sns.distplot(new_var)
+```
+
+### Normalization
+
+`Normalization` biến đổi dữ liệu trong khoảng `[0, 1]`
+
+```{python}
+from sklearn.preprocessing import Normalizer
+norm = Normalizer().fit(x_train)
+```
+
+```{python}
+new_var = norm.transform(x_test)
+```
+
+```{python}
+#Old var
+sns.distplot(x_test[:, 1])
+```
+
+```{python}
+# New var
+sns.distplot(new_var[:, 1])
+```
+
+```{python}
+new_var[:5]
+```
+
+### Tạo hàm bậc cao
+
+```{python}
+from sklearn.preprocessing import PolynomialFeatures
+result = PolynomialFeatures(5).fit_transform(x_train)
+```
+
+```{python}
+# New var
+sns.distplot(result[:, 1])
+```
+
+```{python}
+# Old var
+sns.distplot(x_train[:, 1])
+```
+
+### MinMax scaler
+
+```{python}
+from sklearn.preprocessing import MinMaxScaler
+result = MinMaxScaler().fit_transform(x_train)
+```
+
+```{python}
+sns.distplot(result[:, 1])
+```
+
+```{python}
+sns.distplot(x_train[:, 1])
+```
+
+### Robust scaling
+
+Tương tự như StandardScaler, nhưng Robust Scaling sẽ thay `mean` bằng median
+
+```{python}
+from sklearn.preprocessing import RobustScaler
+result = RobustScaler().fit_transform(x_train)
+```
+
+```{python}
+sns.distplot(result[:, 1])
+```
+
+## Biến category
+
+### Onehot encoding
+
+```{python}
+cat_var = np.array(['a', 'a', 'b', 'c', 'b'])
+cat_var.reshape(5, 1)
+```
+
+```{python}
+from sklearn.preprocessing import LabelEncoder
+onehot = LabelEncoder()
+onehot.fit_transform(cat_var)
+```
+
+## Chọn mô hình & phân tích kết quả
+
+```{python}
+from sklearn.datasets import load_breast_cancer
+breast = load_breast_cancer()
+```
+
+```{python}
+from sklearn.model_selection import train_test_split
+```
+
+```{python}
+x_train, x_test, y_train, y_test = train_test_split(breast.data, breast.target, test_size = 0.3, random_state = 0)
+```
+
+```{python}
+from xgboost import XGBClassifier
+```
+
+```{python}
+xgb_model = XGBClassifier(probabbility = True)
+```
+
+```{python}
+xgb_model.fit(x_train, y_train)
+```
+
+```{python}
+xgb_model.predict(x_test)
+```
+
+```{python}
+# Dự báo xác suất
+pred_prob = xgb_model.predict_proba(x_test)
+pred_class = xgb_model.predict(x_test)
+print(pred_prob[:5]); print(pred_class[:5])
+```
+
+```{python}
+from sklearn.metrics import *
+```
+
+```{python}
+accuracy_score(y_test, pred_class)
+```
+
+```{python}
+confusion_matrix(y_test, pred_class)
+```
+
+```{python}
+print(classification_report(y_test, pred_class))
+```
+
+```{python}
+roc_auc_score(y_test, pred_prob[:, 1])
+```
+
+`roc_curve` cho phép trả ra kết quả FPR & TPR và threshold
+
+```{python}
+fpr, tpr, threshold = roc_curve(y_test, pred_prob[:, 1])
+```
+
+```{python}
+sns.lineplot(fpr, tpr, marker = True)
+```
+
+## Grid search
+
+```{python}
+xgb_model = XGBClassifier()
+from sklearn.model_selection import GridSearchCV
+```
+
+```{python}
+params = {"max_depth" : [3,4,5],
+         "sample_rate" : [0.6, 0.7],
+         "colsample_bytree" : [0.6, 0.8]}
+```
+
+```{python}
+grid = GridSearchCV(estimator = xgb_model,
+                   param_grid = params,
+                   scoring = "roc_auc",
+                   cv = 5) # Số lượng cross-validation
+```
+
+```{python}
+grid.fit(x_train, y_train)
+```
+
+```{python}
+grid.best_score_
+```
+
+```{python}
+grid.best_params_
+```
+

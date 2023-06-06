@@ -1,0 +1,100 @@
+---
+title: Xây dựng API dự báo với Flask
+eval: false
+---
+
+
+
+Tương tự như `plumber`, `flask` là một thư viện hỗ trợ xây dựng API trong Python
+
+Các bước xây dựng API dự báo với Flask như sau:
+- Xây dựng mô hình, lưu lại mô hình
+- Tạo `Flask` object
+- Load mô hình và dự báo cho tập mới
+
+## Xây dựng mô hình
+
+```python
+# Load library
+from sklearn import svm, datasets
+import pickle 
+import numpy as np
+
+# Load Sample data
+iris = datasets.load_iris()
+
+# Split loaded data into independent and target features
+X = iris.data  
+y = iris.target
+
+# Tạo mô hình SVM 
+svmModel = svm.SVC(kernel='poly', degree=3, C=1.0).fit(X, y)
+
+# Lưu lại mô hình
+from sklearn.externals import joblib
+file_name = "SVMModel.sav"
+joblib.dump(svmModel, file_name)
+```
+
+## Tạo Flask object
+
+```python
+# import Flask class from the flask module
+from flask import Flask, request
+
+import numpy as np
+import pickle
+from sklearn.externals import joblib
+
+# Create Flask object to run
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Dự báo iris!!"
+
+@app.route('/predict')
+def predict():
+
+	# Tạo variable từ request
+	sepLen = request.args['sepal_length']
+	sepWid = request.args['sepal_width']
+	petLen = request.args['petal_length']
+	petWid = request.args['petal_width']
+	
+	testData = np.array([sepLen, sepWid, petLen, petWid]).reshape(1,4)
+	class_prediced = int(svmIrisModel.predict(testData)[0])
+	output = "Predicted Iris Class: " + str(class_prediced)
+	
+	return (output)
+	
+# Load model đã train
+# Model chỉ được load lần đầu
+def load_model():
+	global svmIrisModel
+	
+	svmIrisModel = joblib.load('SVMModel.sav')
+
+if __name__ == "__main__":
+	print("**Starting Server...")
+	
+	# Call function that loads Model
+	load_model()
+	
+	# Run Server
+	app.run()
+```
+
+## Dùng mô hình dự báo realtime
+
+```python
+http://127.0.0.1:5000/predict?sepal_length=6.0&sepal_width=2.5&petal_length=5.5&petal_width=0
+```
+
+## Tài liệu tham khảo
+
+Xem thêm folder `iris-api-prediction` trong phần tài liệu
+
+- https://github.com/satishkrupadhyay/Iris-Prediction-with-Web-API
+- https://medium.com/@dvelsner/deploying-a-simple-machine-learning-model-in-a-modern-web-application-flask-angular-docker-a657db075280
+

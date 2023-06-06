@@ -1,0 +1,57 @@
+project:
+  type: book
+
+book:
+  title: "Data Analytics - Python"
+  author: "Hoàng Đức Anh"
+  date: "1/1/2020"
+  chapters:
+      - index.qmd
+      - part: "Phân tích khám phá dữ liệu"
+        chapters:
+          - p01-01-intro-jupyter-notebook.qmd
+          - p01-02-gioi-thieu-co-ban-python.qmd
+          - p01-03-numpy.qmd
+          - p01-05-pandas.qmd
+          - p01-06-datetime.qmd
+          - p01-07-lam-viec-voi-text.qmd
+          - p01-08-matplotlib.qmd
+          - p01-09-seaborn.qmd
+          - p01-13-lam-viec-voi-files.qmd
+          - p01-19-so-sanh-python-r.qmd
+          - p01-99-tricks-python.qmd
+      - part: "Học máy cơ bản"
+        chapters:          
+          - p02-01-sklearn.qmd
+          - p02-02-sklearn-advanced.qmd
+          - p02-03-xgboost.qmd
+          - p02-07-machine-learning-h2o.qmd
+          - p02-20-api-flask.qmd
+      - part: "Các vấn đề khác"
+        chapters:
+          - p05-01-django.qmd
+          - p06-01-lap-trinh-doi-tuong-python.qmd
+          - p07-01-functions-in-python.qmd
+
+format:
+  html:
+    # mainfont: Cambria
+    embed-fonts: true
+    toc: true
+    toc_number: yes
+    # toc-location: left
+    number-sections: true
+    toc-title: "Mục lục"
+    # highlight-style: haddock
+    # fontcolor: "black"
+    code-fold: false
+    # code-tools: true
+    code-line-numbers: true
+# self-contained: true
+title-block-banner: "#27445C"
+
+theme:
+  light: default
+  dark: superhero
+
+

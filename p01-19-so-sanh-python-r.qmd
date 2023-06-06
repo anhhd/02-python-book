@@ -1,0 +1,30 @@
+---
+title: So sánh R với Python cơ bản
+---
+
+
+
+### Câu lệnh cơ bản
+
+| Hàm | Python | R (reference) | Note |
+|---|:----:|-----|-----|
+| Install packages | `conda install x` | install.packages("x") |
+| Load package | `import library as x` | library(x) |
+| Kiểm tra thư mục làm việc | `import os as os` <br/> os.getcwd() | getwd() | Current directory 
+| Đổi thư mục làm việc | `os.chdir` | setwd() | Change directory
+| Liệt kê các file trong thư mục| `os.listdr()` | dir() | list directory 
+| Liệt kê các life trong environment | `globals()` | ls()
+| Xóa object | `del(object)` | rm(object)|
+
+###  Làm việc với data frame cơ bản
+
+| Hàm | Python | R (reference) | Note |
+|---|:----:|-----|-----|
+| Tên hàng | `df.index` | rownames(df) |
+| Tên cột | `df.columns` | colnames(df |
+| Head | `df.head(3)` | head(df, 3) |
+| Tail | `df.tail(3)` | tail(df, 3) |
+| Dim | `df.shape` | dim(df) | `df.shape()` không chạy do shape không phải <br/> hàm mà là thuộc tính
+| Summary | `df.describe()` | summary(df) | 
+| Đổi tên | `df.columns = ["P", "Q"]` | names(df) = c("P", "Q") |
+

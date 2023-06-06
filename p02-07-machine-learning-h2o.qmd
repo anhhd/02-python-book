@@ -1,0 +1,89 @@
+---
+title: Machine learning với `H2O`
+eval: false
+---
+
+
+
+## Giới thiệu
+
+Tương tự như R, `H2O` phát triển module máy học trên `python`. Từ `h2o` version `3.26.0.7`, H2O cho phép upload ngược lại `MOJO object` để có thể sử dụng trong mô hình.
+
+```python
+pip install h2o
+```
+
+```{python}
+import h2o
+```
+
+```{python}
+h2o.init(nthreads = -1, max_mem_size = 4)
+```
+
+```{python}
+airlines_data = h2o.import_file("./99_dataset/allyears2k.csv")
+```
+
+```{python}
+airlines_data.head()
+```
+
+```{python}
+## Create a GBM model, only to later export it as a MOJO
+from h2o.estimators import H2OGradientBoostingEstimator
+original_model = H2OGradientBoostingEstimator(ntrees = 1)
+original_model.train(x = ["Origin", "Dest"], y = "IsDepDelayed", training_frame=airlines_data)
+```
+
+```{python}
+original_model.accuracy
+```
+
+```{python}
+import pandas as pd
+```
+
+```{python}
+# Convert sang H2o Frame
+test_data = pd.DataFrame({'Origin': ['SAN'], 'Dest': ['SFO']})
+test_data_h2o = h2o.H2OFrame(test_data)
+```
+
+```{python}
+# Dự báo
+original_model.predict(test_data_h2o)
+```
+
+**Cách download file MOJO**
+
+```{python}
+original_model_filename = original_model.download_mojo(path="../datasets/model/", get_genmodel_jar=True)
+```
+
+```{python}
+original_model_filename
+```
+
+```{python}
+# Upload mojo back
+mojo_model = h2o.upload_mojo(original_model_filename)
+```
+
+```{python}
+result = mojo_model.predict(airlines_data.head())
+```
+
+```{python}
+# Convert từ H2oFrame sang DataFrame
+type(h2o.as_list(result))
+```
+
+**Lưu ý**:
+
+- Mô hình `MOJO` có thể load ngược lại vào R và sử dụng cho production
+
+## Tài liệu tham khảo 
+
+- http://docs.h2o.ai/h2o-tutorials/latest-stable/
+

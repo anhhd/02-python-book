@@ -1,0 +1,86 @@
+---
+title: Tạo website với Django
+eval: false
+---
+
+
+
+## Giới thiệu
+
+`Django` là framework rất hữu dụng trong python cho phép xây dựng website. Khác với `blogdown` hay `rmarkdown`, `Django` cho phép xây dựng website hoàn chỉnh, hỗ trợ tương tác với database
+
+**Giới thiệu về Django**
+
+Bất kỳ website nào được xây dựng cũng có các cấu phần sau:
+
+- Dữ liệu - được quản lý, truy vấn, lưu trữ, thay đổi trong database, sử dụng các công cụ truy vấn databse
+- Design - quản lý các trải nghiệm người dùng, sử dụng các công cụ như HTML, CSS
+- Chức năng - quản lý và xây dựng các tính năng tương tác cho người dùng
+- Deployment - quản lý và deploy các cấu phần của website
+
+Để thực hiện việc quản lý và phát triển hiệu quả, các cấu phần cần được tách biệt với nhau. Theo các concept trên, `Django` có 3 cấu phần chính:
+
+1. Làm việc với database
+2. Làm việc với các template, hỗ trợ hiển thị cho người dùng
+3. Quản lý chức năng giúp người dùng tương tác với database 
+
+**Cấu phần của Django**:
+
+- `App`: Chứa các chức năng có trong website. Một website có thể chứa một hoặc nhiều app. Các module của app thường dùng đã được tạo sẵn với django và ta chỉ cần import. Trong folder project sẽ chứa trong `settings.py`
+- `db.sqltite3`: Default database, mặc định là sqlite
+- `manage.py`: Django utilities
+
+```
+# ...\my_clubproject
+
+\env_myclub
+\myclub_site        <= This is your Django project
+    \myclub_site    <= This is a Django app
+    db.sqlite3      <= Your project database
+    manage.py       <= Django project management utility
+```
+
+Trong cấu trúc website của project, có các file sau:
+
+```
+# \myclub_project\myclub_root\
+
+\myclub_site
+    __init.py__
+    settings.py
+    urls.py
+    wsgi.py
+```
+
+- `__init__.py`: Mô tả website như là 1 package python
+- `settings.py`: Các cấu phần cài đặt của website
+- `urls.py`: Cách thức website trả về các trang khi nhận được request
+- `wsgi.py`: Các cấu phần liên quan đến deployment
+
+Các bước xây dựng Django website cơ bản:
+
+```python
+# Tạo virtual environment
+python -m venv env_myclub
+# Activate
+env_myclub/scriptsactivate
+# Tạo project
+django-admin startproject env_myclub
+# Tạo database
+python manage.py migrate
+# Run server
+python manage.py runserver
+```
+
+## Model
+
+Để tương tác với database, `Django` dùng `ORM` - Object Relational Mapping
+
+![](Image/Django_ORM_600.png)
+
+Django hỗ trợ 4 function cơ bản của Database là CRUD - Create, Read, Update & Delete
+
+## Tài liệu tham khảo
+
+- https://djangobook.com/mdj2-django-structure/
+

@@ -1,0 +1,293 @@
+---
+title: Viết hàm trong Python
+eval: false
+---
+
+
+
+## Giới thiệu về hàm
+
+Tương tự như R, Python cho phép sử dụng hàm linh hoạt với các tham số và trả ra kết quả định sẵn. Có 1 số lưu ý như sau:
+
+- Hàm bắt đầu với `def`
+- Các tham số mặc định được sử dụng tương tự như R. VD `def plus(a, b = 2)`
+- Trong hàm cho phép ghi chú document của hàm trong ba dấu ngoặc kép, được gọi là `docs string`
+- Các tham số chưa biết (tương ứng với `...` trong R) được sử dụng với argument `*args`
+
+```{python}
+def plus_1(a, b = 2):
+    """Trả ra kết quả hàm tổng"""
+    return a + b
+```
+
+```{python}
+plus_1(4)
+```
+
+```{python}
+?plus_1
+```
+
+```{python}
+def plus_2(*args):
+    return np.sum(args)
+```
+
+```{python}
+plus_2(3,4,5)
+```
+
+**Ví dụ hàm trả ra n số Fibonacci đầu tiên**
+
+```{python}
+def fib_n(n):
+    if n == 1:
+        my_list = list([0])
+    elif n == 2:
+        my_list = list([0, 1])
+    else: 
+        my_list = list([0, 1])
+        f0 = 0
+        f1 = 1
+        my_range = range(n-2)
+        for i in my_range:
+            f2 = f1 + f0
+            f0 = f1
+            f1 = f2
+            my_list.append(f2)
+    return(my_list)
+```
+
+```{python}
+fib_n(9)
+```
+
+## Hàm summary theo group
+
+```{python}
+def load_iris_df():
+    """
+    Load iris data in the form of dataframe with grouping variable.
+    The data set is used to ilustrate different functions of VPBank package
+    """
+    
+    import numpy as np
+    import pandas as pd
+    from sklearn.datasets import load_iris
+    iris = load_iris()
+    ref_species = pd.DataFrame({
+        'species_code' : [0, 1, 2],
+        'species' : iris.target_names
+    })
+    # Sửa lại name
+    name = pd.Series(iris.feature_names)
+    name = name.str.replace('\\(cm\\)', '')
+    name = name.str.strip().str.replace(' ', '_')
+    iris_df = pd.DataFrame(iris.data,
+                           columns = name)
+    iris_df['species_code'] = iris.target
+    iris_df = pd.merge(iris_df, ref_species, how = 'left').drop('species_code', 1)
+    iris_df['group'] = np.random.randint(1,3, 150)
+    iris_df.group = iris_df.group.astype(object)
+    return iris_df
+```
+
+```{python}
+iris_df = load_iris_df()
+```
+
+```{python}
+iris_df.groupby(['species', 'group'])['sepal_length'].agg({
+    'mean' : np.mean,
+    'median': np.median})
+```
+
+```{python}
+np.quantile(iris_df['sepal_length'], [0.75, 0.9])
+```
+
+```{python}
+# Tạo hàm tính percentile
+def percentile(n):
+    def percentile_(x):
+        return np.percentile(x,n)
+    percentile_.__name__ = 'percentile_%s' % n
+    return percentile_
+```
+
+```{python}
+iris_df.groupby('species')['sepal_length'].agg({
+    'mean',
+    np.median,
+    percentile(90),
+    percentile(25),
+    'count'
+})
+```
+
+```{python}
+def analytics_summarise(data, value_var, group_var):
+    """Quickly summarise statistics of one measures by different groups
+    
+    Args: 
+    
+    - data: dataframe to analyze
+    - value_var: variable to analyze
+    - group_var: list of grouping variables
+    
+    Returns:
+    
+    - A dataframe of summarise statistics
+    
+    """
+    
+    def _percentile(n):
+        def percentile_(x):
+            return np.percentile(x,n)
+        percentile_.__name__ = 'percentile_%s' % n
+        return percentile_
+
+    result = data.groupby(group_var)[value_var].agg({
+        'n' : 'count',
+        'mean' : np.mean,
+        'min' : np.min,
+        'q25' : _percentile(25),
+        'median' : np.median,
+        'q75' : _percentile(75),
+        'q90' : _percentile(90),
+        'max' : np.max})
+    return result
+```
+
+
+```{python}
+analytics_summarise(iris_df, 'sepal_length', ['species', 'group'])
+```
+
+```{python}
+# boxplot
+def _draw_boxplot(data, value_var, group_var):
+    import seaborn as sns
+    from matplotlib import pyplot
+    # Set retina resolution for chart
+    %config InlineBackend.figure_format = 'retina'
+    sns.set_style("ticks")
+    my_plot = sns.boxplot(x = "species", y = "sepal_length", data = iris_df)
+    sns.despine()     
+    return my_plot
+```
+
+```{python}
+plot = _draw_boxplot(iris_df, 'sepal_length', 'species')
+```
+
+```{python}
+import matplotlib.pyplot as plt
+plot.set_yscale('log')
+```
+
+```{python}
+plot.get_figure()
+```
+
+```{python}
+plot.set(title = 'My plot')
+plot.get_figure()
+```
+
+## ANOVA Tukey HSD
+
+```{python}
+def _anova_turkey(data, value_var, group_var):   
+    from statsmodels.stats.multicomp import (pairwise_tukeyhsd,
+                                             MultiComparison)
+
+    MultiComp = MultiComparison(data[value_var],
+                                data[group_var])
+
+    # Show all pair-wise comparisons:
+
+    # Print the comparisons
+    result = MultiComp.tukeyhsd().summary()
+    print('Comparison of ' + value_var + ' by ' + group_var)
+    print('===========================================')
+  #  print(result)
+    return result
+```
+
+```{python}
+_anova_turkey(iris_df, 'sepal_length', 'species')
+```
+
+## Compare group
+
+```{python}
+del [analytics_summarise, anova_turkey, compare_group, draw_boxplot]
+```
+
+```{python}
+def compare_group(data, value_var, group_var):
+    
+    # Declare class for result
+    
+    class compare_result(object):
+        def __init__(self, summary_table, aov_model, box_plot):
+            self.summary_table = summary_table
+            self.aov_model = aov_model
+            self.box_plot = box_plot
+
+    # Function to analyse data
+    
+    def analytics_summarise(data, value_var, group_var):
+        """Summarise statistics"""
+   
+        def _percentile(n):
+            def percentile_(x):
+                return np.percentile(x,n)
+            percentile_.__name__ = 'percentile_%s' % n
+            return percentile_
+
+        result = data.groupby(group_var)[value_var].agg({
+            'n' : 'count',
+            'mean' : np.mean,
+            'min' : np.min,
+            'q25' : _percentile(25),
+            'median' : np.median,
+            'q75' : _percentile(75),
+            'q90' : _percentile(90),
+            'max' : np.max})
+        return result
+    
+    # Draw box plot
+    def draw_boxplot(data, value_var, group_var):
+        import seaborn as sns
+        from matplotlib import pyplot
+        # Set retina resolution for chart
+        %config InlineBackend.figure_format = 'retina'
+        sns.set_style("ticks")
+        my_plot = sns.boxplot(x = data[group_var], y = data[value_var], data = data)
+        sns.despine()     
+        return my_plot
+    
+    # AOV model
+    def aov_turkey(data, value_var, group_var):
+        from statsmodels.stats.multicomp import (pairwise_tukeyhsd, MultiComparison)
+        MultiComp = MultiComparison(data[value_var],
+                                        data[group_var])
+        result = MultiComp.tukeyhsd().summary()
+        return result     
+    
+    return compare_result(
+        summary_table = analytics_summarise(data, value_var, group_var),
+        aov_model = aov_turkey(data, value_var, group_var),
+        box_plot = draw_boxplot(data, value_var, group_var))
+```
+
+```{python}
+stat_result = compare_group(data = iris_df, group_var = 'species', value_var = 'sepal_length')
+```
+
+```{python}
+stat_result.aov_model
+```
+

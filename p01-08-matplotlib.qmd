@@ -1,0 +1,281 @@
+---
+title: Trực quan hóa với Matplotlib
+jupyter: python3
+---
+
+
+
+## Cơ bản về matplotlib
+
+`matplotlib` là thư viện được sử dụng rộng rãi trong Python khi trực quan hóa dữ liệu.
+
+```{python}
+import numpy as np
+import matplotlib as mlt
+import matplotlib.pyplot as plt
+# %matplotlib inline
+```
+
+```{python}
+# Sử dụng style plot
+plt.style.use('seaborn')
+```
+
+`matplotlib` có chứa nhiều style khác nhau. Ta có thể kiểm tra với câu lệnh sau
+
+```{python}
+plt.style.available
+```
+
+```{python}
+# Ví dụ 1
+x = np.linspace(0, 10, 100)
+```
+
+```{python}
+plt.plot(x, np.sin(x))
+plt.plot(x, np.cos(x))
+plt.show()
+```
+
+**Giải thích**: 
+- `pyplot` tạo một object plot. Các câu lệnh của `plt` sẽ thay đổi các thành phần trong plot (add, remove, modify...). 
+- `plt.show()` sẽ hiển thị object cuối cùng sau khi đã thực hiện toàn bộ câu lệnh.
+- Khi thực hiện option `%matplotlib inline`, sẽ không cần sử dụng `plt.show()`
+
+## Điều chỉnh chi tiết plot
+
+```{python}
+x = np.linspace(0, 10, 100)
+# Tạo object figure
+fig = plt.figure()
+plt.plot(x, np.sin(x), '-')
+plt.plot(x, np.cos(x), '--')
+```
+
+```python
+# Save plot
+fig.savefig('my_figure.png')
+```
+
+## Hai cách xây dựng biểu đồ
+
+### Matlab style
+
+Cách này được thực hiện tương tự như `matlab`, cách thức thực hiện như sau:
+- Tạo biểu đồ
+- Tạo subplot trong biểu đồ, xác định tọa độ và add biểu đồ con
+
+```{python}
+# Tạo figure
+plt.figure() 
+# Tạo khu vực 2 hàng, 1 cột, 1 panel
+plt.subplot(2,1,1) # Add plot vào panel số 1
+plt.plot(x, np.sin(x))
+plt.subplot(2,1,2) # Add plot vào panel số 2
+plt.plot(x, np.cos(x))
+plt.show()
+```
+
+**Lưu ý**: Hai biểu đồ phải được đặt cùng trong 1 cell
+
+### Object oriented style
+
+Sử dụng `plt.subplots()`, kết quả trả ra là 2 object dạng figure và axes trong matplotlib.
+- `figure` là 1 đối tượng của class `plt.Figure`, bao gồm tất cả thành phần của biểu đồ (trục, label, đồ thị)
+- `axes` là khung thể hiện của figure
+
+Hai câu lệnh sau là tương đương
+
+```python
+# Cách 1
+fig = plt.figure()
+ax = plt.axes()
+
+# Cách 2
+fig, ax = plt.subplots()
+```
+
+```{python}
+fig, ax = plt.subplots(2)
+ax[0].plot(x, np.sin(x))
+ax[1].plot(x, np.cos(x), '--')
+```
+
+```{python}
+type(fig)
+```
+
+```{python}
+type(ax)
+```
+
+## Điều chỉnh các thành phần cơ bản
+
+### Biểu đồ đường
+
+```{python}
+plt.style.use('seaborn-whitegrid')
+```
+
+```{python}
+fig = plt.figure()
+ax = plt.axes()
+x = np.linspace(0, 10, 100)
+ax.plot(x, np.sin(x))
+plt.show()
+```
+
+```{python}
+plt.plot(x, np.sin(x), color = 'red')
+plt.plot(x, np.cos(x), color = 'blue', linestyle = 'dashed')
+plt.show()
+```
+
+```{python}
+# Điều chỉnh định dạng
+plt.plot(x, x, linestyle = '-')
+plt.plot(x, x + 1, linestyle = '--') # dash
+plt.plot(x, x + 2, linestyle = '-.') # dash dot
+plt.plot(x, x + 3, linestyle = ':')  # dot
+plt.show()
+```
+
+### Điều chỉnh xlim, ylim
+
+```{python}
+plt.plot(x, np.sin(x))
+plt.xlim(-1, 11)
+plt.ylim(0.5, 1)
+plt.show()
+```
+
+```{python}
+# Cách 2
+plt.plot(x, np.sin(x))
+plt.axis([-1, 11, 0.5, 1]) # x = [-1, 11], y = [0.5, 1]
+```
+
+### Điều chỉnh tên 
+
+```{python}
+plt.plot(x, np.sin(x))
+plt.title('Biểu đồ sin')
+```
+
+### Điều chỉnh chú giải
+
+```{python}
+plt.plot(x, np.sin(x), label = 'sin')
+plt.plot(x, np.cos(x), label = 'cos')
+plt.legend()
+plt.axis('equal')
+plt.title('Đồ thị sin và cos')
+```
+
+### Methods `ax`
+
+**Lưu ý**: Các phương pháp sử dụng hàm `plt` và methods `axes` là tương đương nhau
+
+- `plt.xlabel()` → `ax.set_xlabel()`
+- `plt.ylabel()` → `ax.set_ylabel()`
+- `plt.xlim()` → `ax.set_xlim()`
+- `plt.ylim()` → `ax.set_ylim()`
+- `plt.title()` → `ax.set_title()`
+
+```{python}
+ax = plt.axes()
+ax.plot(x, np.sin(x))
+ax.set(xlim = (0, 10), ylim = (-2, 2),
+      xlabel = 'x', ylabel = 'sin(x)',
+      title = 'Biểu đồ sin(x)')
+```
+
+## Các loại biểu đồ thường dùng
+
+### Scatter plot
+
+```{python}
+x = np.linspace(0, 10, 30)
+y = np.sin(x)
+plt.plot(x, y, 'o')
+plt.ylim(-1.5, 1.5)
+```
+
+```{python}
+plt.plot(x, y, '-ok')
+plt.ylim(-1.5, 1.5)
+```
+
+### Sử dụng plt.scatter
+
+`plt.scatter` cho phép linh hoạt hơn so với plt.plot nhưng tốc độ xử lý sẽ chậm hơn
+
+```{python}
+rng = np.random.RandomState(0)
+x = rng.randn(100)
+y = rng.randn(100)
+colors = rng.rand(100)
+sizes = 1000 * rng.rand(100)
+plt.scatter(x, y, c=colors, s=sizes, alpha=0.3,
+                   cmap='viridis')
+plt.colorbar();  # show color scale
+```
+
+### Contour plot
+
+```{python}
+def my_value(x, y):
+    return np.sin(x) ** 10 + np.cos(10 + x*y) * np.cos(x)
+```
+
+```{python}
+x = np.linspace(0, 5, 50)
+y = np.linspace(0, 5, 40)
+X, Y = np.meshgrid(x, y)
+Z = my_value(X, Y) 
+```
+
+```{python}
+plt.contour(X, Y, Z, colors = "blue")
+```
+
+```{python}
+plt.contour(X, Y, Z, 20, cmap='RdGy')
+plt.colorbar()
+```
+
+```{python}
+plt.contourf(X, Y, Z, 20, cmap='RdGy')
+plt.colorbar();
+```
+
+### Histogram
+
+```{python}
+x = np.random.normal(0, 1, 1000)
+plt.hist(x, color = 'steelblue', alpha = 0.7)
+#Add đường giá trị trung bình
+plt.axvline(x = np.mean(x), color = 'darkred', linestyle = '--')
+```
+
+### Text
+
+Ta có thể còn `annotate` bằng cách dùng method `ax.annotate`
+
+```{python}
+x = np.random.normal(0,1,1000)
+```
+
+```{python}
+fig, ax = plt.subplots()
+ax.hist(x, color = 'steelblue', alpha = 0.7)
+#Add đường giá trị trung bình
+ax.axvline(x = np.mean(x), color = 'darkred', linestyle = '--')
+ax.annotate('Mean = 0', xy = (0.5, 250))
+```
+
+## Tài liệu tham khảo
+
+- Python Data Science Handbook - Chương 4
+

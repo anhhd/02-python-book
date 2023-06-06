@@ -1,0 +1,253 @@
+---
+title: Seaborn vizualization
+eval: false
+---
+
+Seaborn là package được xây dựng dựa trên nền của matplotlib, hỗ trợ tốt hơn việc trực quan hóa dữ liệu. Flow trực quan hóa dữ liệu với `seaborn` gần tương đồng với `GGPLOT2` và được tiến hành như sau:
+
+- Chuẩn bị dữ liệu
+- Xác định các thuộc tính hình học
+- Vẽ biểu đồ
+- Customize các yếu tố khác
+
+**Lưu ý**: Trong seaborn có các dataset ví dụ. Tuy nhiên, do các data set này không được lưu sẵn mà lại được load từ github. Do đó, khi bị chặn proxy sẽ không sử dụng được.
+
+## Giới thiệu cơ bản
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style('white')
+# %matplotlib inline
+# Đặt retina resolution
+# %config InlineBackend.figure_format = 'retina'
+```
+
+```{python}
+sns.__version__
+```
+
+```{python}
+titanic = pd.read_csv("./99_dataset/titanic.csv")
+iris = pd.read_csv("./99_dataset/iris.csv")
+tips = pd.read_csv("./99_dataset/tips.csv")
+iris.head()
+```
+
+```{python}
+titanic.head()
+```
+
+```{python}
+g = sns.catplot(x= "class", 
+            y = "survived", 
+            hue = "sex", # Biến group
+            data = titanic, kind = "bar")
+```
+
+```{python}
+g.set_axis_labels("Class", "Survived")
+```
+
+```{python}
+plt.show(g)
+```
+
+## Biểu đồ cơ bản
+
+### Scatterplot
+
+```{python}
+p = sns.stripplot(x = "species", y = "sepal_length", data = iris)
+plt.show(p)
+```
+
+```{python}
+sns.relplot('sepal_length', 'sepal_width', data = iris,
+            col = 'species',
+            hue = 'species')
+```
+
+**Lưu ý**: Ta nên sử dụng `relplot` khi vẽ `scatter plot` do câu lệnh này cho phép xây dựng biểu đồ linh hoạt hơn
+
+### Point plot
+
+```{python}
+tips.describe()
+```
+
+```{python}
+sns.pointplot(x="tip", y="total_bill", data=tips)
+# Add thêm annotate
+plt.annotate('Average: 9', xy = (5, 25))
+plt.show()
+```
+
+### Bar chart
+
+```{python}
+my_plot = sns.barplot("sex", y = "survived", hue = "class", data = titanic)
+my_plot.set(title = "My chart", xlabel = "Sex", ylabel = "Survived")
+```
+
+## Distribution plot
+
+### Histogram & density
+
+```{python}
+sns.distplot(iris['sepal_length'])
+sns.distplot(iris['sepal_width'])
+```
+
+### Kernel density
+
+```{python}
+sns.kdeplot(iris[iris.columns[0:2]])
+```
+
+### Joint plot
+
+```{python}
+# Joint plot
+with sns.axes_style("white"):
+    sns.jointplot('sepal_length', 'sepal_width', iris, kind = "kde")
+```
+
+```{python}
+# Joint plot
+with sns.axes_style("white"):
+    sns.jointplot('sepal_length', 'sepal_width', iris, kind = "hex")
+```
+
+## Pair plot
+
+```{python}
+sns.pairplot(iris,
+            hue = 'species') # Chia nhóm
+```
+
+## Facet
+
+`seaborn` hỗ trợ hệ thống facet
+
+```{python}
+tips = pd.read_csv("./99_dataset/tips.csv")
+```
+
+```{python}
+tips.head()
+```
+
+```{python}
+# Chưa chia facet
+plt.hist(tips['total_bill'])
+```
+
+```{python}
+# Chia facet
+grid = sns.FacetGrid(tips, row = "time", col = "sex")
+grid.map(plt.hist, 'total_bill')
+```
+
+```{python}
+# Chia facet
+grid = sns.FacetGrid(tips, row = "time", col = "sex")
+grid.map(sns.distplot, "total_bill")
+```
+
+## Category plot
+
+### Factor plot
+
+```{python}
+with sns.axes_style(style = "ticks"):
+    g = sns.factorplot("day", "total_bill", "sex", data = tips, kind = "box")
+    g.set_axis_labels("Days", "Bill")
+```
+
+```{python}
+tips.head()
+```
+
+```{python}
+# Boxplot
+sns.axes_style('ticks')
+my_plot = sns.boxplot(data = tips, x = "day", y = "total_bill", hue = "sex")
+```
+
+```{python}
+# Chuyển legend lên trên figure
+my_plot.legend(loc='upper center', ncol = 2, bbox_to_anchor=(0.5, 1.1))
+```
+
+```{python}
+my_plot.get_figure()
+```
+
+### Barplot
+
+```{python}
+sns.factorplot("day", data = tips, kind = "count")
+```
+
+## Tùy chỉnh các thành phần
+
+```{python}
+sns.set_style('ticks')
+p = sns.stripplot("sepal_length", "sepal_width", hue = "species", data = iris)
+# Add title, name
+p.set(xlabel = "X", ylabel = "Y", title = "My chart")
+# Scale y
+p.set_yscale('log')
+# Loại bỏ trục trên
+sns.despine()
+# Legend
+plt.legend(loc = "lower center",
+          frameon = True, # Giữ frame
+          ncol= 3)
+# Lưu thành object
+p_chart = p.get_figure()
+```
+
+```{python}
+p_chart.savefig('chart.png', dpi = 400)
+```
+
+## Lưu ý khác
+
+**Lưu ý**: `seaborn` không áp dụng chain method một cách đơn giản giống pandas được
+
+```{python}
+with sns.axes_style("ticks"):
+    p = sns.boxplot("sex", "total_bill", hue = "smoker", data = tips)
+    # Thêm title
+    # Điều chỉnh tên trục
+    p.set(xlabel = "Gender", ylabel = "Amount", title = "My chart")
+    sns.despine()
+    p.legend(loc = 'upper center', ncol = 2, bbox_to_anchor = (0.5, 1.02))
+    #plt.savefig("seaborn_chart.png")
+    boxplot = p.get_figure()
+```
+
+**Lưu lại biểu đồ**
+
+```python
+boxplot.savefig("boxplot.png")
+```
+
+#### Chia facet
+
+Tương tự như `matplotlib`, `seaborn` cần được sử dụng kèm với `map` để chia thành hệ thống `facet`
+
+```{python}
+import matplotlib.pyplot as plt
+g=sns.FacetGrid(data=tips,col='sex')
+g.map(sns.regplot,'total_bill','tip')
+```
+
+## Tài liệu tham khảo
+
+- [https://seaborn.pydata.org/tutorial.html](https://seaborn.pydata.org/tutorial.html)
+

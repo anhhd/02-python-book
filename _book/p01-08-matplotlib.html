@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.336">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Analytics - Python - 7&nbsp; Trực quan hóa với Matplotlib</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./p01-09-seaborn.html" rel="next">
+<link href="./p01-07-lam-viec-voi-text.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: #27445C;
+      }
+</style>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./p01-01-intro-jupyter-notebook.html">Phân tích khám phá dữ liệu</a></li><li class="breadcrumb-item"><a href="./p01-08-matplotlib.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Trực quan hóa với Matplotlib</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Trực quan hóa với Matplotlib</span></h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Analytics - Python</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Giới thiệu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Phân tích khám phá dữ liệu</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-01-intro-jupyter-notebook.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Giới thiệu về Python và Jupyter Notebook</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-02-gioi-thieu-co-ban-python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Các cấu trúc cơ bản trong Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-03-numpy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Giới thiệu về Numpy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-05-pandas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Pandas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-06-datetime.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dữ liệu thời gian trong Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-07-lam-viec-voi-text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Biến đổi dữ liệu text trong python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-08-matplotlib.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Trực quan hóa với Matplotlib</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-09-seaborn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Seaborn vizualization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-13-lam-viec-voi-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Làm việc với các file trong máy tính</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-19-so-sanh-python-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">So sánh R với Python cơ bản</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p01-99-tricks-python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Các mẹo trong Python</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Học máy cơ bản</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p02-01-sklearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Giới thiệu cơ bản về Scikit learn</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p02-02-sklearn-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">sklearn nâng cao</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p02-03-xgboost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Xgboost với sklearn</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p02-07-machine-learning-h2o.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine learning với <code>H2O</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p02-20-api-flask.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Xây dựng API dự báo với Flask</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Các vấn đề khác</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p05-01-django.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Tạo website với Django</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p06-01-lap-trinh-doi-tuong-python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Lập trình hướng - đối tượng với Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./p07-01-functions-in-python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Viết hàm trong Python</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Mục lục</h2>
+   
+  <ul>
+  <li><a href="#cơ-bản-về-matplotlib" id="toc-cơ-bản-về-matplotlib" class="nav-link active" data-scroll-target="#cơ-bản-về-matplotlib"><span class="header-section-number">7.1</span> Cơ bản về matplotlib</a></li>
+  <li><a href="#điều-chỉnh-chi-tiết-plot" id="toc-điều-chỉnh-chi-tiết-plot" class="nav-link" data-scroll-target="#điều-chỉnh-chi-tiết-plot"><span class="header-section-number">7.2</span> Điều chỉnh chi tiết plot</a></li>
+  <li><a href="#hai-cách-xây-dựng-biểu-đồ" id="toc-hai-cách-xây-dựng-biểu-đồ" class="nav-link" data-scroll-target="#hai-cách-xây-dựng-biểu-đồ"><span class="header-section-number">7.3</span> Hai cách xây dựng biểu đồ</a>
+  <ul class="collapse">
+  <li><a href="#matlab-style" id="toc-matlab-style" class="nav-link" data-scroll-target="#matlab-style"><span class="header-section-number">7.3.1</span> Matlab style</a></li>
+  <li><a href="#object-oriented-style" id="toc-object-oriented-style" class="nav-link" data-scroll-target="#object-oriented-style"><span class="header-section-number">7.3.2</span> Object oriented style</a></li>
+  </ul></li>
+  <li><a href="#điều-chỉnh-các-thành-phần-cơ-bản" id="toc-điều-chỉnh-các-thành-phần-cơ-bản" class="nav-link" data-scroll-target="#điều-chỉnh-các-thành-phần-cơ-bản"><span class="header-section-number">7.4</span> Điều chỉnh các thành phần cơ bản</a>
+  <ul class="collapse">
+  <li><a href="#biểu-đồ-đường" id="toc-biểu-đồ-đường" class="nav-link" data-scroll-target="#biểu-đồ-đường"><span class="header-section-number">7.4.1</span> Biểu đồ đường</a></li>
+  <li><a href="#điều-chỉnh-xlim-ylim" id="toc-điều-chỉnh-xlim-ylim" class="nav-link" data-scroll-target="#điều-chỉnh-xlim-ylim"><span class="header-section-number">7.4.2</span> Điều chỉnh xlim, ylim</a></li>
+  <li><a href="#điều-chỉnh-tên" id="toc-điều-chỉnh-tên" class="nav-link" data-scroll-target="#điều-chỉnh-tên"><span class="header-section-number">7.4.3</span> Điều chỉnh tên</a></li>
+  <li><a href="#điều-chỉnh-chú-giải" id="toc-điều-chỉnh-chú-giải" class="nav-link" data-scroll-target="#điều-chỉnh-chú-giải"><span class="header-section-number">7.4.4</span> Điều chỉnh chú giải</a></li>
+  <li><a href="#methods-ax" id="toc-methods-ax" class="nav-link" data-scroll-target="#methods-ax"><span class="header-section-number">7.4.5</span> Methods <code>ax</code></a></li>
+  </ul></li>
+  <li><a href="#các-loại-biểu-đồ-thường-dùng" id="toc-các-loại-biểu-đồ-thường-dùng" class="nav-link" data-scroll-target="#các-loại-biểu-đồ-thường-dùng"><span class="header-section-number">7.5</span> Các loại biểu đồ thường dùng</a>
+  <ul class="collapse">
+  <li><a href="#scatter-plot" id="toc-scatter-plot" class="nav-link" data-scroll-target="#scatter-plot"><span class="header-section-number">7.5.1</span> Scatter plot</a></li>
+  <li><a href="#sử-dụng-plt.scatter" id="toc-sử-dụng-plt.scatter" class="nav-link" data-scroll-target="#sử-dụng-plt.scatter"><span class="header-section-number">7.5.2</span> Sử dụng plt.scatter</a></li>
+  <li><a href="#contour-plot" id="toc-contour-plot" class="nav-link" data-scroll-target="#contour-plot"><span class="header-section-number">7.5.3</span> Contour plot</a></li>
+  <li><a href="#histogram" id="toc-histogram" class="nav-link" data-scroll-target="#histogram"><span class="header-section-number">7.5.4</span> Histogram</a></li>
+  <li><a href="#text" id="toc-text" class="nav-link" data-scroll-target="#text"><span class="header-section-number">7.5.5</span> Text</a></li>
+  </ul></li>
+  <li><a href="#tài-liệu-tham-khảo" id="toc-tài-liệu-tham-khảo" class="nav-link" data-scroll-target="#tài-liệu-tham-khảo"><span class="header-section-number">7.6</span> Tài liệu tham khảo</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="cơ-bản-về-matplotlib" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="cơ-bản-về-matplotlib"><span class="header-section-number">7.1</span> Cơ bản về matplotlib</h2>
+<p><code>matplotlib</code> là thư viện được sử dụng rộng rãi trong Python khi trực quan hóa dữ liệu.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> matplotlib <span class="im">as</span> mlt</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># %matplotlib inline</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Sử dụng style plot</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>plt.style.use(<span class="st">'seaborn'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\Hoang Duc Anh\AppData\Local\Temp\ipykernel_7740\4269312434.py:2: MatplotlibDeprecationWarning:
+
+The seaborn styles shipped by Matplotlib are deprecated since 3.6, as they no longer correspond to the styles shipped by seaborn. However, they will remain available as 'seaborn-v0_8-&lt;style&gt;'. Alternatively, directly use the seaborn API instead.
+</code></pre>
+</div>
+</div>
+<p><code>matplotlib</code> có chứa nhiều style khác nhau. Ta có thể kiểm tra với câu lệnh sau</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>plt.style.available</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>['Solarize_Light2',
+ '_classic_test_patch',
+ '_mpl-gallery',
+ '_mpl-gallery-nogrid',
+ 'bmh',
+ 'classic',
+ 'dark_background',
+ 'fast',
+ 'fivethirtyeight',
+ 'ggplot',
+ 'grayscale',
+ 'seaborn-v0_8',
+ 'seaborn-v0_8-bright',
+ 'seaborn-v0_8-colorblind',
+ 'seaborn-v0_8-dark',
+ 'seaborn-v0_8-dark-palette',
+ 'seaborn-v0_8-darkgrid',
+ 'seaborn-v0_8-deep',
+ 'seaborn-v0_8-muted',
+ 'seaborn-v0_8-notebook',
+ 'seaborn-v0_8-paper',
+ 'seaborn-v0_8-pastel',
+ 'seaborn-v0_8-poster',
+ 'seaborn-v0_8-talk',
+ 'seaborn-v0_8-ticks',
+ 'seaborn-v0_8-white',
+ 'seaborn-v0_8-whitegrid',
+ 'tableau-colorblind10']</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Ví dụ 1</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>plt.plot(x, np.sin(x))</span>
+<span id="cb7-2"><a href="#cb7-2"></a>plt.plot(x, np.cos(x))</span>
+<span id="cb7-3"><a href="#cb7-3"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-6-output-1.png" width="658" height="447"></p>
+</div>
+</div>
+<p><strong>Giải thích</strong>: - <code>pyplot</code> tạo một object plot. Các câu lệnh của <code>plt</code> sẽ thay đổi các thành phần trong plot (add, remove, modify…). - <code>plt.show()</code> sẽ hiển thị object cuối cùng sau khi đã thực hiện toàn bộ câu lệnh. - Khi thực hiện option <code>%matplotlib inline</code>, sẽ không cần sử dụng <code>plt.show()</code></p>
+</section>
+<section id="điều-chỉnh-chi-tiết-plot" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="điều-chỉnh-chi-tiết-plot"><span class="header-section-number">7.2</span> Điều chỉnh chi tiết plot</h2>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co"># Tạo object figure</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb8-4"><a href="#cb8-4"></a>plt.plot(x, np.sin(x), <span class="st">'-'</span>)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>plt.plot(x, np.cos(x), <span class="st">'--'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-7-output-1.png" width="658" height="447"></p>
+</div>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Save plot</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>fig.savefig(<span class="st">'my_figure.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="hai-cách-xây-dựng-biểu-đồ" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="hai-cách-xây-dựng-biểu-đồ"><span class="header-section-number">7.3</span> Hai cách xây dựng biểu đồ</h2>
+<section id="matlab-style" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="matlab-style"><span class="header-section-number">7.3.1</span> Matlab style</h3>
+<p>Cách này được thực hiện tương tự như <code>matlab</code>, cách thức thực hiện như sau: - Tạo biểu đồ - Tạo subplot trong biểu đồ, xác định tọa độ và add biểu đồ con</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Tạo figure</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>plt.figure() </span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># Tạo khu vực 2 hàng, 1 cột, 1 panel</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>plt.subplot(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>) <span class="co"># Add plot vào panel số 1</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a>plt.plot(x, np.sin(x))</span>
+<span id="cb10-6"><a href="#cb10-6"></a>plt.subplot(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>) <span class="co"># Add plot vào panel số 2</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>plt.plot(x, np.cos(x))</span>
+<span id="cb10-8"><a href="#cb10-8"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-8-output-1.png" width="650" height="447"></p>
+</div>
+</div>
+<p><strong>Lưu ý</strong>: Hai biểu đồ phải được đặt cùng trong 1 cell</p>
+</section>
+<section id="object-oriented-style" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="object-oriented-style"><span class="header-section-number">7.3.2</span> Object oriented style</h3>
+<p>Sử dụng <code>plt.subplots()</code>, kết quả trả ra là 2 object dạng figure và axes trong matplotlib. - <code>figure</code> là 1 đối tượng của class <code>plt.Figure</code>, bao gồm tất cả thành phần của biểu đồ (trục, label, đồ thị) - <code>axes</code> là khung thể hiện của figure</p>
+<p>Hai câu lệnh sau là tương đương</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Cách 1</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb11-3"><a href="#cb11-3"></a>ax <span class="op">=</span> plt.axes()</span>
+<span id="cb11-4"><a href="#cb11-4"></a></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co"># Cách 2</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>fig, ax <span class="op">=</span> plt.subplots()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">2</span>)</span>
+<span id="cb12-2"><a href="#cb12-2"></a>ax[<span class="dv">0</span>].plot(x, np.sin(x))</span>
+<span id="cb12-3"><a href="#cb12-3"></a>ax[<span class="dv">1</span>].plot(x, np.cos(x), <span class="st">'--'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-9-output-1.png" width="650" height="447"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="bu">type</span>(fig)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>matplotlib.figure.Figure</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="bu">type</span>(ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>numpy.ndarray</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="điều-chỉnh-các-thành-phần-cơ-bản" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="điều-chỉnh-các-thành-phần-cơ-bản"><span class="header-section-number">7.4</span> Điều chỉnh các thành phần cơ bản</h2>
+<section id="biểu-đồ-đường" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="biểu-đồ-đường"><span class="header-section-number">7.4.1</span> Biểu đồ đường</h3>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a>plt.style.use(<span class="st">'seaborn-whitegrid'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\Hoang Duc Anh\AppData\Local\Temp\ipykernel_7740\2414357448.py:1: MatplotlibDeprecationWarning:
+
+The seaborn styles shipped by Matplotlib are deprecated since 3.6, as they no longer correspond to the styles shipped by seaborn. However, they will remain available as 'seaborn-v0_8-&lt;style&gt;'. Alternatively, directly use the seaborn API instead.
+</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb19-2"><a href="#cb19-2"></a>ax <span class="op">=</span> plt.axes()</span>
+<span id="cb19-3"><a href="#cb19-3"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>)</span>
+<span id="cb19-4"><a href="#cb19-4"></a>ax.plot(x, np.sin(x))</span>
+<span id="cb19-5"><a href="#cb19-5"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-13-output-1.png" width="658" height="447"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>plt.plot(x, np.sin(x), color <span class="op">=</span> <span class="st">'red'</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>plt.plot(x, np.cos(x), color <span class="op">=</span> <span class="st">'blue'</span>, linestyle <span class="op">=</span> <span class="st">'dashed'</span>)</span>
+<span id="cb20-3"><a href="#cb20-3"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-14-output-1.png" width="658" height="447"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Điều chỉnh định dạng</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>plt.plot(x, x, linestyle <span class="op">=</span> <span class="st">'-'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3"></a>plt.plot(x, x <span class="op">+</span> <span class="dv">1</span>, linestyle <span class="op">=</span> <span class="st">'--'</span>) <span class="co"># dash</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>plt.plot(x, x <span class="op">+</span> <span class="dv">2</span>, linestyle <span class="op">=</span> <span class="st">'-.'</span>) <span class="co"># dash dot</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>plt.plot(x, x <span class="op">+</span> <span class="dv">3</span>, linestyle <span class="op">=</span> <span class="st">':'</span>)  <span class="co"># dot</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-15-output-1.png" width="639" height="447"></p>
+</div>
+</div>
+</section>
+<section id="điều-chỉnh-xlim-ylim" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="điều-chỉnh-xlim-ylim"><span class="header-section-number">7.4.2</span> Điều chỉnh xlim, ylim</h3>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>plt.plot(x, np.sin(x))</span>
+<span id="cb22-2"><a href="#cb22-2"></a>plt.xlim(<span class="op">-</span><span class="dv">1</span>, <span class="dv">11</span>)</span>
+<span id="cb22-3"><a href="#cb22-3"></a>plt.ylim(<span class="fl">0.5</span>, <span class="dv">1</span>)</span>
+<span id="cb22-4"><a href="#cb22-4"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-16-output-1.png" width="642" height="452"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a><span class="co"># Cách 2</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>plt.plot(x, np.sin(x))</span>
+<span id="cb23-3"><a href="#cb23-3"></a>plt.axis([<span class="op">-</span><span class="dv">1</span>, <span class="dv">11</span>, <span class="fl">0.5</span>, <span class="dv">1</span>]) <span class="co"># x = [-1, 11], y = [0.5, 1]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>(-1.0, 11.0, 0.5, 1.0)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-17-output-2.png" width="642" height="452"></p>
+</div>
+</div>
+</section>
+<section id="điều-chỉnh-tên" class="level3" data-number="7.4.3">
+<h3 data-number="7.4.3" class="anchored" data-anchor-id="điều-chỉnh-tên"><span class="header-section-number">7.4.3</span> Điều chỉnh tên</h3>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>plt.plot(x, np.sin(x))</span>
+<span id="cb25-2"><a href="#cb25-2"></a>plt.title(<span class="st">'Biểu đồ sin'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>Text(0.5, 1.0, 'Biểu đồ sin')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-18-output-2.png" width="658" height="467"></p>
+</div>
+</div>
+</section>
+<section id="điều-chỉnh-chú-giải" class="level3" data-number="7.4.4">
+<h3 data-number="7.4.4" class="anchored" data-anchor-id="điều-chỉnh-chú-giải"><span class="header-section-number">7.4.4</span> Điều chỉnh chú giải</h3>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1"></a>plt.plot(x, np.sin(x), label <span class="op">=</span> <span class="st">'sin'</span>)</span>
+<span id="cb27-2"><a href="#cb27-2"></a>plt.plot(x, np.cos(x), label <span class="op">=</span> <span class="st">'cos'</span>)</span>
+<span id="cb27-3"><a href="#cb27-3"></a>plt.legend()</span>
+<span id="cb27-4"><a href="#cb27-4"></a>plt.axis(<span class="st">'equal'</span>)</span>
+<span id="cb27-5"><a href="#cb27-5"></a>plt.title(<span class="st">'Đồ thị sin và cos'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>Text(0.5, 1.0, 'Đồ thị sin và cos')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-19-output-2.png" width="639" height="469"></p>
+</div>
+</div>
+</section>
+<section id="methods-ax" class="level3" data-number="7.4.5">
+<h3 data-number="7.4.5" class="anchored" data-anchor-id="methods-ax"><span class="header-section-number">7.4.5</span> Methods <code>ax</code></h3>
+<p><strong>Lưu ý</strong>: Các phương pháp sử dụng hàm <code>plt</code> và methods <code>axes</code> là tương đương nhau</p>
+<ul>
+<li><code>plt.xlabel()</code> → <code>ax.set_xlabel()</code></li>
+<li><code>plt.ylabel()</code> → <code>ax.set_ylabel()</code></li>
+<li><code>plt.xlim()</code> → <code>ax.set_xlim()</code></li>
+<li><code>plt.ylim()</code> → <code>ax.set_ylim()</code></li>
+<li><code>plt.title()</code> → <code>ax.set_title()</code></li>
+</ul>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1"></a>ax <span class="op">=</span> plt.axes()</span>
+<span id="cb29-2"><a href="#cb29-2"></a>ax.plot(x, np.sin(x))</span>
+<span id="cb29-3"><a href="#cb29-3"></a>ax.<span class="bu">set</span>(xlim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">10</span>), ylim <span class="op">=</span> (<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb29-4"><a href="#cb29-4"></a>      xlabel <span class="op">=</span> <span class="st">'x'</span>, ylabel <span class="op">=</span> <span class="st">'sin(x)'</span>,</span>
+<span id="cb29-5"><a href="#cb29-5"></a>      title <span class="op">=</span> <span class="st">'Biểu đồ sin(x)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>[(0.0, 10.0),
+ (-2.0, 2.0),
+ Text(0.5, 0, 'x'),
+ Text(0, 0.5, 'sin(x)'),
+ Text(0.5, 1.0, 'Biểu đồ sin(x)')]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-20-output-2.png" width="675" height="487"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="các-loại-biểu-đồ-thường-dùng" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="các-loại-biểu-đồ-thường-dùng"><span class="header-section-number">7.5</span> Các loại biểu đồ thường dùng</h2>
+<section id="scatter-plot" class="level3" data-number="7.5.1">
+<h3 data-number="7.5.1" class="anchored" data-anchor-id="scatter-plot"><span class="header-section-number">7.5.1</span> Scatter plot</h3>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">30</span>)</span>
+<span id="cb31-2"><a href="#cb31-2"></a>y <span class="op">=</span> np.sin(x)</span>
+<span id="cb31-3"><a href="#cb31-3"></a>plt.plot(x, y, <span class="st">'o'</span>)</span>
+<span id="cb31-4"><a href="#cb31-4"></a>plt.ylim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>(-1.5, 1.5)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-21-output-2.png" width="650" height="452"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1"></a>plt.plot(x, y, <span class="st">'-ok'</span>)</span>
+<span id="cb33-2"><a href="#cb33-2"></a>plt.ylim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>(-1.5, 1.5)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-22-output-2.png" width="650" height="452"></p>
+</div>
+</div>
+</section>
+<section id="sử-dụng-plt.scatter" class="level3" data-number="7.5.2">
+<h3 data-number="7.5.2" class="anchored" data-anchor-id="sử-dụng-plt.scatter"><span class="header-section-number">7.5.2</span> Sử dụng plt.scatter</h3>
+<p><code>plt.scatter</code> cho phép linh hoạt hơn so với plt.plot nhưng tốc độ xử lý sẽ chậm hơn</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">0</span>)</span>
+<span id="cb35-2"><a href="#cb35-2"></a>x <span class="op">=</span> rng.randn(<span class="dv">100</span>)</span>
+<span id="cb35-3"><a href="#cb35-3"></a>y <span class="op">=</span> rng.randn(<span class="dv">100</span>)</span>
+<span id="cb35-4"><a href="#cb35-4"></a>colors <span class="op">=</span> rng.rand(<span class="dv">100</span>)</span>
+<span id="cb35-5"><a href="#cb35-5"></a>sizes <span class="op">=</span> <span class="dv">1000</span> <span class="op">*</span> rng.rand(<span class="dv">100</span>)</span>
+<span id="cb35-6"><a href="#cb35-6"></a>plt.scatter(x, y, c<span class="op">=</span>colors, s<span class="op">=</span>sizes, alpha<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb35-7"><a href="#cb35-7"></a>                   cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb35-8"><a href="#cb35-8"></a>plt.colorbar()<span class="op">;</span>  <span class="co"># show color scale</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-23-output-1.png" width="598" height="447"></p>
+</div>
+</div>
+</section>
+<section id="contour-plot" class="level3" data-number="7.5.3">
+<h3 data-number="7.5.3" class="anchored" data-anchor-id="contour-plot"><span class="header-section-number">7.5.3</span> Contour plot</h3>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">def</span> my_value(x, y):</span>
+<span id="cb36-2"><a href="#cb36-2"></a>    <span class="cf">return</span> np.sin(x) <span class="op">**</span> <span class="dv">10</span> <span class="op">+</span> np.cos(<span class="dv">10</span> <span class="op">+</span> x<span class="op">*</span>y) <span class="op">*</span> np.cos(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">50</span>)</span>
+<span id="cb37-2"><a href="#cb37-2"></a>y <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">40</span>)</span>
+<span id="cb37-3"><a href="#cb37-3"></a>X, Y <span class="op">=</span> np.meshgrid(x, y)</span>
+<span id="cb37-4"><a href="#cb37-4"></a>Z <span class="op">=</span> my_value(X, Y) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1"></a>plt.contour(X, Y, Z, colors <span class="op">=</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>&lt;matplotlib.contour.QuadContourSet at 0x1d9ef761600&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-26-output-2.png" width="635" height="452"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1"></a>plt.contour(X, Y, Z, <span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'RdGy'</span>)</span>
+<span id="cb40-2"><a href="#cb40-2"></a>plt.colorbar()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>&lt;matplotlib.colorbar.Colorbar at 0x1d9ee8816f0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-27-output-2.png" width="598" height="452"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1"></a>plt.contourf(X, Y, Z, <span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'RdGy'</span>)</span>
+<span id="cb42-2"><a href="#cb42-2"></a>plt.colorbar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-28-output-1.png" width="598" height="452"></p>
+</div>
+</div>
+</section>
+<section id="histogram" class="level3" data-number="7.5.4">
+<h3 data-number="7.5.4" class="anchored" data-anchor-id="histogram"><span class="header-section-number">7.5.4</span> Histogram</h3>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1"></a>x <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1000</span>)</span>
+<span id="cb43-2"><a href="#cb43-2"></a>plt.hist(x, color <span class="op">=</span> <span class="st">'steelblue'</span>, alpha <span class="op">=</span> <span class="fl">0.7</span>)</span>
+<span id="cb43-3"><a href="#cb43-3"></a><span class="co">#Add đường giá trị trung bình</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>plt.axvline(x <span class="op">=</span> np.mean(x), color <span class="op">=</span> <span class="st">'darkred'</span>, linestyle <span class="op">=</span> <span class="st">'--'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>&lt;matplotlib.lines.Line2D at 0x1d9ee7dd0c0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-29-output-2.png" width="646" height="447"></p>
+</div>
+</div>
+</section>
+<section id="text" class="level3" data-number="7.5.5">
+<h3 data-number="7.5.5" class="anchored" data-anchor-id="text"><span class="header-section-number">7.5.5</span> Text</h3>
+<p>Ta có thể còn <code>annotate</code> bằng cách dùng method <code>ax.annotate</code></p>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1"></a>x <span class="op">=</span> np.random.normal(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb46-2"><a href="#cb46-2"></a>ax.hist(x, color <span class="op">=</span> <span class="st">'steelblue'</span>, alpha <span class="op">=</span> <span class="fl">0.7</span>)</span>
+<span id="cb46-3"><a href="#cb46-3"></a><span class="co">#Add đường giá trị trung bình</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>ax.axvline(x <span class="op">=</span> np.mean(x), color <span class="op">=</span> <span class="st">'darkred'</span>, linestyle <span class="op">=</span> <span class="st">'--'</span>)</span>
+<span id="cb46-5"><a href="#cb46-5"></a>ax.annotate(<span class="st">'Mean = 0'</span>, xy <span class="op">=</span> (<span class="fl">0.5</span>, <span class="dv">250</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>Text(0.5, 250, 'Mean = 0')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="p01-08-matplotlib_files/figure-html/cell-31-output-2.png" width="646" height="447"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="tài-liệu-tham-khảo" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="tài-liệu-tham-khảo"><span class="header-section-number">7.6</span> Tài liệu tham khảo</h2>
+<ul>
+<li>Python Data Science Handbook - Chương 4</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./p01-07-lam-viec-voi-text.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Biến đổi dữ liệu text trong python</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./p01-09-seaborn.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Seaborn vizualization</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
